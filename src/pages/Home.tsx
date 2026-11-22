@@ -401,7 +401,7 @@ export default function Home() {
     <div className="min-h-screen bg-bg-primary text-text-primary font-sans selection:bg-primary/20 selection:text-primary pb-24">
       <SEO 
         title="Curiva Homoeopathy | Academic & Clinical Study Center"
-        description="Learn classical Homoeopathy with our Materia Medica suite and prepare for exams. Practice with advanced AI symptom-checkers and repertory tools."
+        description="Learn classical Homoeopathy with our Materia Medica suite and prepare for exams. Practice with structured study, search and repertory tools."
       />
 
       {/* Quick Navigation remains at the top so learning content is immediately accessible. */}
@@ -469,7 +469,7 @@ export default function Home() {
               className="group bg-white dark:bg-zinc-900 border border-border/85 hover:border-primary/40 rounded-2xl p-8 sm:p-10 shadow-soft hover:shadow-hover-card transition-all duration-300 flex flex-col justify-between min-h-[300px]"
             >
               <div>
-                <span className="font-mono text-[0.7rem] uppercase tracking-widest text-primary font-bold block mb-2">Clinical Intelligence</span>
+                <span className="font-mono text-[0.7rem] uppercase tracking-widest text-primary font-bold block mb-2">Clinical Learning</span>
                 <h3 className="font-serif text-2xl sm:text-3xl font-semibold leading-tight text-text-primary group-hover:text-primary transition-colors">
                   Revisions <br />Exam Board
                 </h3>

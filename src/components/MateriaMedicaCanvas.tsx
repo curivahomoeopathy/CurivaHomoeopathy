@@ -1,17 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { 
-  Send, Edit2, Save, BookOpen, TableProperties, X, Volume2, 
-  Printer, Download, Sparkles, Plus, Search, ArrowLeft, 
-  HelpCircle, Check, RotateCcw, Filter, Leaf, Database, 
-  Activity, Star, FileText, ChevronRight, CheckCircle2,
-  Layers, ArrowUpRight, Network, ShieldAlert, GraduationCap,
-  Bookmark, BookmarkCheck, ArrowUpDown, SlidersHorizontal
+import {
+  Edit2, Save, BookOpen, Printer, Search, Filter, Leaf, Database, Activity, Star, CheckCircle2, Layers, ArrowUpRight, Network, ShieldAlert, Bookmark, BookmarkCheck, ArrowUpDown
 } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
-import AiPrivacyNotice, { hasCurrentAiAcademicConsent } from './AiPrivacyNotice';
-import { AI_ACADEMIC_CONSENT_VERSION, validateAcademicAiText } from '../server/aiPrivacyGuard';
 import { enhancedRemedies, RemedyDetailData } from '../data/enhancedRemedies';
 import { materiaMedicaData, RemedyDetail } from '../data/materiaMedica';
 import { 
@@ -22,11 +15,6 @@ import {
 } from '../utils/bookmarkUtils';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
 
 const getRemedyMiasmProfile = (id: string) => {
   const normId = (id || '').toLowerCase();
@@ -159,55 +147,6 @@ const getRemedyMiasmProfile = (id: string) => {
 };
 
 // ====================================================
-// EDUCATIONAL-GRADE ACADEMY REPOSITORIES (BHMS & AIAPGET)
-// ====================================================
-const AIAPGET_QUESTIONS = [
-  {
-    category: "Materia Medica", 
-    question: "Sensation as if a cold heavy stone is in the stomach, occurring immediately after eating food, is characteristic of:",
-    options: ["Abies Nigra", "Nux Vomica", "Arsenicum Album", "Pulsatilla Nigricans"],
-    answer: "Abies Nigra",
-    pearl: "Abies Nigra is famous for this exact sensation. In contrast, Nux Vomica has pain 1-2 hours after eating, while Pulsatilla feels heavy or bloated with a stone sensation later."
-  },
-  {
-    category: "Kent Repertory",
-    question: "In Kent Repertory, under which chapter will you find the rubric 'Sensitiveness to music'?",
-    options: ["Mind", "Hearing", "Generalities", "Nervous System"],
-    answer: "Mind",
-    pearl: "Sensitiveness to music is a mental symptom and is classified under the chapter 'MIND'. Prominent remedies include Natrum Carb, Aconite, and Chamomilla."
-  },
-  {
-    category: "Organon of Medicine",
-    question: "The concept of 'Miasm' was introduced by Dr. Hahnemann in which edition of the Organon of Medicine?",
-    options: ["1st Edition", "3rd Edition", "4th Edition", "6th Edition"],
-    answer: "4th Edition",
-    pearl: "Dr. Hahnemann introduced the Chronic Diseases theory and chronic miasms in the 4th edition of the Organon of Medicine (published in 1829)."
-  },
-  {
-    category: "Allen's Keynotes",
-    question: "Which remedy is characterized by 'All gone, hungry sensation in stomach, which cannot be satisfied even after eating'?",
-    options: ["Phosphate of Iron", "Sulphur", "Cina", "Ignatia Amara"],
-    answer: "Sulphur",
-    pearl: "Sulphur has an empty, all-gone sensation around 11:00 AM, but Iodine and Phosphorus are also highly ravenous with similar constitutional characteristics."
-  }
-];
-
-const FLASHCARDS = [
-  { term: "Arsenicum Album", definition: "Restlessness, fear of death, midnight aggravation (1-2 AM), great thirst for small sips of cold water frequently, burning pain relieved by heat." },
-  { term: "Pulsatilla Nigricans", definition: "Changeable symptoms, mild yielding temperament, weeping easily, thirstlessness with all complaints, better in open air, worse in warm close room." },
-  { term: "Lycopodium Clavatum", definition: "Right-sided complaints (or right to left), 4-8 PM aggravation, warm food and drink cravings, lack of confidence but acts arrogant." },
-  { term: "Gelsemium Sempervirens", definition: "The 3 Ds: Dullness, Dizziness, Drowsiness. Thirstless, trembling, anticipatory stage fright, heavy eyelids." },
-  { term: "Nux Vomica", definition: "Over-sensitive, highly irritable, sedentary lifestyle, ineffectual urging for stool, better from short sleep, extremely chilly." },
-  { term: "Rhus Toxicodendron", definition: "Joint stiffness worse at initial motion, better from continuous motion, restless at night, worse damp rainy weather." },
-  { term: "Natrum Muriaticum", definition: "Silent grief, consolidation worse, craves salt, mapped tongue, header worse from sunrise to sunset." }
-];
-
-const VIVA_QUESTIONS = [
-  { q: "Define 'Similia Similibus Curentur'.", a: "It translates to 'Let likes be cured by likes'—the fundamental therapeutic law of Homoeopathy stating that a substance capable of producing symptoms in a healthy person can cure similar symptoms in an ailing patient." },
-  { q: "What is the difference between a common symptom and a characteristic symptom?", a: "Common symptoms describe the pathological disease state (e.g. fever, headache) and have low repertory weight. Characteristic symptoms are highly individualized, peculiar, rare, and unique to the patient (e.g. headache better from hard pressure, thirstlessness with high dry fever), guiding directly to the simillimum." },
-  { q: "Name three trios of remedies widely recognized in Homoeopathic literature.", a: "1. Trio of Restlessness (Aconite, Arsenicum, Rhus Tox). 2. Trio of Flatulence (Carbo Veg, Lycopodium, China). 3. Trio of Burning (Arsenicum, Sulphur, Phosphorus)." }
-];
-
 // Merge datasets to provide maximum rich entries
 const seededRemedies: RemedyDetailData[] = (() => {
   const mergedMap = new Map<string, RemedyDetailData>();
@@ -376,15 +315,7 @@ export default function MateriaMedicaCanvas() {
   // Canvas-specific states
   const [selectedRemedy, setSelectedRemedy] = useState<RemedyDetailData | null>(null);
   const [activeCanvasTab, setActiveCanvasTab] = useState<'keynotes' | 'mind' | 'physical' | 'modalities' | 'dynamics' | 'relations' | 'notes'>('keynotes');
-  const [showOutline, setShowOutline] = useState(false);
   
-  // Chat States
-  const [chatMessages, setChatMessages] = useState<Message[]>([]);
-  const [chatInput, setChatInput] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [aiConsent, setAiConsent] = useState(hasCurrentAiAcademicConsent);
-  const chatScrollRef = useRef<HTMLDivElement>(null);
-
   // Student Notes State
   const [notesContent, setNotesContent] = useState('');
   const [isEditingNotes, setIsEditingNotes] = useState(false);
@@ -392,42 +323,6 @@ export default function MateriaMedicaCanvas() {
   // Print confirmation toast
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [copiedStatus, setCopiedStatus] = useState<string | null>(null);
-
-  // Advanced Homoeopathic AI Academic & Remedy Intelligence Platform states
-  const [activeSection, setActiveSection] = useState<'directory' | 'ai-suite'>('directory');
-  const [aiSuiteMode, setAiSuiteMode] = useState<'find-remedy' | 'compare-remedies' | 'remedy-personality' | 'keynotes-search' | 'clinical-cases' | 'kent-repertory' | 'aiapget-mode' | 'study-notes' | 'viva-questions' | 'flashcards' | null>(null);
-
-  // Form input states
-  const [symptomsInput, setSymptomsInput] = useState('Burning pains better by heat, restlessness after midnight, great clinical anxiety');
-  const [remedyA, setRemedyA] = useState('Nux Vomica');
-  const [remedyB, setRemedyB] = useState('Lycopodium Clavatum');
-  const [personalityRemedy, setPersonalityRemedy] = useState('Arsenicum Album');
-  const [keynotesQuery, setKeynotesQuery] = useState('Splinter-like pain in throat, worse swallowing');
-  
-  // Clinical analyzer fields
-  const [caseAge, setCaseAge] = useState('42');
-  const [caseGender, setCaseGender] = useState('Female');
-  const [caseDiagnosis, setCaseDiagnosis] = useState('Chronic Acid Gastritis');
-  const [caseMental, setCaseMental] = useState('Extreme irritability, anxiety about financial future, wants to be left alone');
-  const [casePhysical, setCasePhysical] = useState('Bloating immediate after eating, sour water eructations, burning pain in abdomen');
-  const [caseModalities, setCaseModalities] = useState('Worse warm drinks, worse 4 PM to 8 PM, better moving slowly');
-
-  // Study note & viva fields
-  const [studyNotesRemedy, setStudyNotesRemedy] = useState('Pulsatilla Nigricans');
-
-  // AI execution states
-  const [aiOutputText, setAiOutputText] = useState('');
-  const [isAiGenerating, setIsAiGenerating] = useState(false);
-
-  // Interactive Quiz states
-  const [quizIdx, setQuizIdx] = useState(0);
-  const [quizSelectedOption, setQuizSelectedOption] = useState<string | null>(null);
-  const [quizIsAnswered, setQuizIsAnswered] = useState(false);
-  const [quizScore, setQuizScore] = useState(0);
-
-  // Interactive Flashcards states
-  const [flashcardIdx, setFlashcardIdx] = useState(0);
-  const [flashcardFlipped, setFlashcardFlipped] = useState(false);
 
   // families for filtering
   const families = [
@@ -457,8 +352,6 @@ export default function MateriaMedicaCanvas() {
       
       if (match) {
         setSelectedRemedy(match);
-        // Reset advanced view if active to ensure we see the remedy
-        setActiveSection('directory');
         // Scroll to top of study view if needed
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -560,19 +453,6 @@ Date: ${new Date().toLocaleDateString()}
         setNotesContent(template);
       }
 
-      // Initialize AI Study Assistant Chat
-      setChatMessages([
-        {
-          role: 'assistant',
-          content: `Welcome to the **Interactive Gemini Canvas** for **${selectedRemedy.name}**! 
-
-I am your AI Study Companion. Ask me questions about this remedy's characteristics, clinical differential diagnoses, or orals exam viva preps.
-
-**💡 Quick Study Canvas Prompts:**
-You can click any ready-to-study suggestion below to load insights. If you like my summary, click **[Send to Canvas]** below my response to instantly insert it into your scrollable Study Notebook on the right!
-          `
-        }
-      ]);
       setActiveCanvasTab('keynotes');
     }
   }, [selectedRemedy]);
@@ -585,85 +465,6 @@ You can click any ready-to-study suggestion below to load insights. If you like 
     }
   };
 
-  // Scroll chat to bottom
-  useEffect(() => {
-    chatScrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chatMessages]);
-
-  // General prompt executor
-  const handleSendPrompt = async (text: string) => {
-    if (!text.trim() || isGenerating) return;
-    const validated = validateAcademicAiText(text, 4000);
-    const priorHistoryIsSafe = chatMessages.slice(1).every(message =>
-      validateAcademicAiText(message.content, 3000).ok
-    );
-    if (!priorHistoryIsSafe) {
-      setChatMessages(prev => [...prev, { role: 'assistant', content: 'Recent chat context may contain personal or clinical information. Nothing was sent. Clear the conversation and use generic academic-only text.' }]);
-      return;
-    }
-    if (!aiConsent || !hasCurrentAiAcademicConsent()) {
-      setChatMessages(prev => [...prev, { role: 'assistant', content: 'Please review the AI privacy notice and acknowledge external processing before sending an academic-only prompt.' }]);
-      return;
-    }
-    if (!validated.ok) {
-      setChatMessages(prev => [...prev, { role: 'assistant', content: 'This text may include personal, identifying or health information. It has not been sent. Please remove patient or personal details and submit an academic-only question.' }]);
-      return;
-    }
-    
-    const userPrompt = text.trim();
-    setChatMessages(prev => [...prev, { role: 'user', content: userPrompt }]);
-    setChatInput('');
-    setIsGenerating(true);
-
-    try {
-      const response = await fetch('/api/gemini/curiva-care', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Curiva-AI-Consent': AI_ACADEMIC_CONSENT_VERSION },
-        body: JSON.stringify({
-          prompt: `Regarding the Homoeopathic remedy "${selectedRemedy?.name}" (${selectedRemedy?.origin}), please address: ${userPrompt}`,
-          conversationHistory: chatMessages.slice(1).map(m => ({
-            role: m.role === 'user' ? 'user' : 'model',
-            text: m.content
-          }))
-        })
-      });
-
-      const isJson = response.headers.get('content-type')?.includes('application/json');
-      if (!isJson) throw new Error('AI response is not JSON');
-
-      const data = await response.json();
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      setChatMessages(prev => [...prev, { role: 'assistant', content: data.text || 'No response compiled.' }]);
-    } catch (err: any) {
-      console.error(err);
-      setChatMessages(prev => [...prev, { role: 'assistant', content: `⚠️ **Curiva AI Service Connection Error:** ${err.message || "Failed to contact proxy. Please check network keys."}` }]);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  // Append response summary to student's canvas notes notebook
-  const handleAppendToNotes = (messageContent: string) => {
-    if (!selectedRemedy) return;
-
-    // Filter out source citations block inside markdown for canvas readability
-    const cleanText = messageContent.split('### 📚 Verified Encyclopedia')[0].trim();
-
-    const annotation = `\n\n--- \n### 🤖 AI Study Synopsis added on ${new Date().toLocaleDateString()}:\n${cleanText}\n`;
-    const updated = notesContent + annotation;
-    saveNotes(updated);
-    
-    // Switch tab to notes so they see the insert
-    setActiveCanvasTab('notes');
-
-    // Display temporary success banner
-    setCopiedStatus('Appended to Study Notes successfully!');
-    setTimeout(() => setCopiedStatus(null), 3000);
-  };
-
   // Printer logic using temporary isolated overlay for clean high fidelity PDF output
   const triggerPrint = () => {
     if (selectedRemedy) {
@@ -673,51 +474,6 @@ You can click any ready-to-study suggestion below to load insights. If you like 
       }, 500);
     } else {
       window.print();
-    }
-  };
-
-  const handleAnalyzeWithAi = async (customPrompt: string) => {
-    if (isAiGenerating) return;
-    if (['find-remedy', 'clinical-cases', 'keynotes-search', 'kent-repertory'].includes(aiSuiteMode || '')) {
-      setAiOutputText('Symptom descriptions, patient narratives and case-based analysis are disabled here. Do not submit clinical narratives to an external AI service.');
-      return;
-    }
-    const validated = validateAcademicAiText(customPrompt, 4000);
-    if (!aiConsent || !hasCurrentAiAcademicConsent()) {
-      setAiOutputText('Please review and acknowledge the AI data-sharing notice before submitting an academic-only prompt.');
-      return;
-    }
-    if (!validated.ok) {
-      setAiOutputText('This prompt may include personal, identifying or health information. It has not been sent. Remove patient or personal details and retry with an academic-only question.');
-      return;
-    }
-    setIsAiGenerating(true);
-    setAiOutputText('');
-
-    try {
-      const response = await fetch('/api/gemini/curiva-care', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Curiva-AI-Consent': AI_ACADEMIC_CONSENT_VERSION },
-        body: JSON.stringify({
-          prompt: customPrompt,
-          conversationHistory: []
-        })
-      });
-
-      const isJson = response.headers.get('content-type')?.includes('application/json');
-      if (!isJson) throw new Error('AI response is not JSON');
-
-      const data = await response.json();
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      setAiOutputText(data.text || 'No response has been compiled by the Homoeopathic experts, please try again.');
-    } catch (err: any) {
-      console.error(err);
-      setAiOutputText(`⚠️ **Academic Proxy Connection Error:** ${err.message || 'Failed to establish cloud channel. Please check backend keys.'}`);
-    } finally {
-      setIsAiGenerating(false);
     }
   };
 
@@ -749,7 +505,7 @@ You can click any ready-to-study suggestion below to load insights. If you like 
       <AnimatePresence mode="wait">
         {!selectedRemedy ? (
           /* ====================================================
-             1. DUAL-VIEW CONTAINER (Toggle between directory index and AI Academy)
+             1. CLASSICAL MATERIA MEDICA DIRECTORY
              ==================================================== */
           <motion.div
             key="materia-outer-shell"
@@ -758,31 +514,8 @@ You can click any ready-to-study suggestion below to load insights. If you like 
             exit={{ opacity: 0, scale: 0.98 }}
             className="space-y-10"
           >
-            {/* Subsection Tab Switcher */}
-            <div className="flex bg-slate-100 dark:bg-zinc-800/80 p-1.5 rounded-2xl max-w-xl mx-auto mb-10 border border-slate-200 dark:border-zinc-700/60 shadow-inner">
-              <button
-                onClick={() => { setActiveSection('directory'); setAiSuiteMode(null); }}
-                className={`flex-grow py-3 px-5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                  activeSection === 'directory'
-                    ? 'bg-white dark:bg-zinc-900 text-primary shadow-sm ring-1 ring-black/5'
-                    : 'text-text-secondary hover:text-text-primary'
-                }`}
-              >
-                <BookOpen className="w-4 h-4 text-primary" /> Classical Index
-              </button>
-              <button
-                onClick={() => { setActiveSection('ai-suite'); }}
-                className={`flex-grow py-3 px-5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                  activeSection === 'ai-suite'
-                    ? 'bg-primary text-white shadow-soft font-extrabold'
-                    : 'text-text-secondary hover:text-text-primary'
-                }`}
-              >
-                <Sparkles className="w-4 h-4 text-accent animate-pulse" /> AI Academy Suite
-              </button>
-            </div>
+            <>
 
-            {activeSection === 'directory' ? (
               <div className="space-y-10 animate-fade">
                 <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/15 bg-primary/5 px-4 py-3 text-xs">
                   <span className="font-bold text-text-primary">
@@ -1022,7 +755,7 @@ You can click any ready-to-study suggestion below to load insights. If you like 
                                       onClick={() => setSelectedRemedy(remedy)}
                                       className="flex-grow w-full py-3 bg-primary text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-primary-dark transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-primary/10"
                                     >
-                                      <Sparkles className="w-3.5 h-3.5 text-accent-light" /> Initialize AI Canvas
+                                      <BookOpen className="w-3.5 h-3.5 text-accent-light" /> Open Study Profile
                                     </button>
                                   )}
                                   <button
@@ -1131,7 +864,7 @@ You can click any ready-to-study suggestion below to load insights. If you like 
                                 onClick={() => setSelectedRemedy(remedy)}
                                 className="flex-grow w-full py-3 bg-primary text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-primary-dark transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-primary/10"
                               >
-                                <Sparkles className="w-3.5 h-3.5 text-accent-light animate-pulse" /> Initialize AI Canvas
+                                <BookOpen className="w-3.5 h-3.5 text-accent-light" /> Open Study Profile
                               </button>
                             )}
                             <button
@@ -1164,884 +897,21 @@ You can click any ready-to-study suggestion below to load insights. If you like 
                   </div>
                 )}
               </div>
-            ) : (
-              /* ====================================================
-                 ✨ COOPERATIVE HomoeoPATHIC AI ACADEMY SUITE
-                 ==================================================== */
-              <div className="space-y-8 animate-fade select-none">
-                
-                {/* Academic Welcome Block */}
-                <div className="p-8 rounded-[2rem] bg-gradient-to-br from-[#0F3D75]/10 via-white to-transparent dark:from-zinc-900 border border-primary/20 shadow-soft flex flex-col md:flex-row items-center justify-between gap-6">
-                  <div className="space-y-2">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/15 text-accent text-[9px] font-bold uppercase tracking-wider border border-accent/20">
-                      <GraduationCap className="w-3.5 h-3.5 text-accent" /> Professional Academic Certification Mode
-                    </span>
-                    <h2 className="text-3xl font-display font-bold text-text-primary tracking-tight leading-tight">
-                      Homoeopathic Academic Learning &amp; AI Intelligence Suite
-                    </h2>
-                    <p className="text-xs text-text-secondary leading-relaxed max-w-2xl font-medium">
-                      An educational database and expert reasoning simulator configured specifically for BHMS students, clinical lecturers, and AIAPGET competitors. Explore classical symptomatology, compare remedy personalities, and practice oral viva board questions in real-time.
-                    </p>
-                  </div>
-                  <div className="p-4 bg-primary text-white rounded-2xl flex items-center gap-3 border border-white/10 shrink-0 shadow-lg">
-                    <ShieldAlert className="w-8 h-8 text-accent animate-pulse shrink-0" />
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-[#FAF8F5]">Institutional Grade</p>
-                      <p className="text-xs text-white/70 max-w-[180px]">References are peer-reviewed from classical textbook catalogs.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mb-5">
-                  <AiPrivacyNotice onChange={setAiConsent} />
-                </div>
-
-                {/* 10 Mode Selection Quick Action Cards Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                  {[
-                    { id: 'compare-remedies', title: 'Compare Remedies', desc: 'Side-by-side comparative', icon: TableProperties, color: 'hover:border-blue-400' },
-                    { id: 'remedy-personality', title: 'Remedy Personality', desc: 'Constitutional profiles', icon: Activity, color: 'hover:border-rose-400' },
-                    { id: 'aiapget-mode', title: 'AIAPGET Mode', desc: 'Board review exam prep', icon: Star, color: 'hover:border-indigo-400' },
-                    { id: 'study-notes', title: 'Study Notes', desc: 'BHMS quick syllabus draft', icon: FileText, color: 'hover:border-teal-400' },
-                    { id: 'viva-questions', title: 'Viva Questions', desc: 'Orals & medical examinations', icon: HelpCircle, color: 'hover:border-violet-400' },
-                    { id: 'flashcards', title: 'Flashcards', desc: 'Dynamic flip card revisions', icon: BookOpen, color: 'hover:border-pink-400' }
-                  ].map(m => {
-                    const Icon = m.icon;
-                    const isActive = aiSuiteMode === m.id;
-                    return (
-                      <button
-                        key={m.id}
-                        onClick={() => {
-                          setAiSuiteMode(m.id as any);
-                          setAiOutputText('');
-                        }}
-                        className={`p-5 rounded-2xl border text-left transition-all relative flex flex-col justify-between h-36 shrink-0 cursor-pointer shadow-soft group hover:-translate-y-1 hover:shadow-md duration-300 ${
-                          isActive
-                          ? 'bg-primary text-white border-primary shadow-lg ring-2 ring-primary/20'
-                          : `bg-white dark:bg-zinc-900 border-border/80 text-text-primary ${m.color}`
-                        }`}
-                      >
-                        <div className={`p-2 rounded-xl w-fit ${isActive ? 'bg-white/10 text-white' : 'bg-primary/5 text-primary group-hover:bg-primary group-hover:text-white transition-colors'}`}>
-                          <Icon className="w-5 h-5" />
-                        </div>
-                        <div className="space-y-1">
-                          <h4 className="text-xs font-black uppercase tracking-wider">{m.title}</h4>
-                          <p className={`text-[9px] line-clamp-2 ${isActive ? 'text-white/60' : 'text-text-secondary font-medium'}`}>{m.desc}</p>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Sub Mode Workspace */}
-                {aiSuiteMode && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-8 rounded-[2rem] bg-white dark:bg-zinc-900 border border-border shadow-soft flex flex-col lg:flex-row gap-8 items-stretch"
-                  >
-                    {/* Mode Inputs Block */}
-                    <div className="flex-grow lg:w-1/2 space-y-6 flex flex-col justify-between">
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3 pb-3 border-b border-border">
-                          <span className="text-xs font-black uppercase tracking-widest text-primary bg-primary/5 px-3 py-1 rounded-xl">Workspace Input</span>
-                          <span className="text-[10px] text-text-secondary font-bold">Configure parameters & submit to AI</span>
-                        </div>
-
-                        {/* MODE 1: FIND REMEDY */}
-                        {aiSuiteMode === 'find-remedy' && (
-                          <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-widest block text-text-secondary">📋 Enter Symptoms List (Mental &amp; Physical):</label>
-                            <textarea
-                              value={symptomsInput}
-                              onChange={(e) => setSymptomsInput(e.target.value)}
-                              rows={4}
-                              className="w-full h-28 p-4 border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 text-xs bg-bg-secondary font-serif text-text-primary leading-relaxed shadow-inner"
-                              placeholder="Describe case manifestations. e.g. acute sudden chills, fear of death, thirsty for small quantities..."
-                            />
-                            <button
-                              onClick={() => {
-                                handleAnalyzeWithAi(`Analyze these symptoms for a classical Homoeopathic remedy match: "${symptomsInput}". Format your reply EXACTLY like this:
-                                  - ANALYSES: (Mental/Physical symptoms, Modalities, Sensations, Location)
-                                  - PREDICTIONS: (List top 3 remedies with realistic Match % e.g., Arsenicum Album 96%, Phosphorus 81%, Sulphur 76%)
-                                  - EXPLANATIONS: (Detailed reasons why these are selected, keynotes matched, and important clinical differentiating points).
-                                  Never return only remedy names.`);
-                              }}
-                              disabled={isAiGenerating}
-                              className="w-full py-4.5 bg-primary hover:bg-primary-dark text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md hover:shadow-xl"
-                            >
-                              <Sparkles className="w-4 h-4 text-accent" /> Analyze Symptom Affinities
-                            </button>
-                          </div>
-                        )}
-
-                        {/* MODE 2: COMPARE REMEDIES */}
-                        {aiSuiteMode === 'compare-remedies' && (
-                          <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest block text-text-secondary mb-1.5">Remedy A (Select):</label>
-                                <select
-                                  value={remedyA}
-                                  onChange={(e) => setRemedyA(e.target.value)}
-                                  className="w-full p-4.5 border border-border rounded-xl bg-bg-secondary focus:outline-none text-xs font-bold text-text-primary"
-                                >
-                                  {allRemedies.map(r => (
-                                    <option key={r.id} value={r.name}>{r.name}</option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest block text-text-secondary mb-1.5">Remedy B (Select):</label>
-                                <select
-                                  value={remedyB}
-                                  onChange={(e) => setRemedyB(e.target.value)}
-                                  className="w-full p-4.5 border border-border rounded-xl bg-bg-secondary focus:outline-none text-xs font-bold text-text-primary"
-                                >
-                                  {allRemedies.map(r => (
-                                    <option key={r.id} value={r.name}>{r.name}</option>
-                                  ))}
-                                </select>
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => {
-                                handleAnalyzeWithAi(`Generate a comprehensive comparative matrix contrasting "${remedyA}" vs "${remedyB}". Include:
-                                  - Mind comparison
-                                  - Thermal State
-                                  - Appetite & Digestion
-                                  - Sleep & Personality
-                                  - Modalities (Aggravation / Amelioration)
-                                  - Clinical Uses & Keynotes
-                                  - PRACTICAL DIFFERENTIATOR: Direct clinical guidelines on how a student or practitioner can differentiate between these two remedies in practice.`);
-                              }}
-                              disabled={isAiGenerating}
-                              className="w-full py-4.5 bg-primary hover:bg-primary-dark text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md hover:shadow-xl"
-                            >
-                              <TableProperties className="w-4 h-4 text-accent animate-pulse" /> Compile Comparative Matrix
-                            </button>
-                          </div>
-                        )}
-
-                        {/* MODE 3: REMEDY PERSONALITY */}
-                        {aiSuiteMode === 'remedy-personality' && (
-                          <div className="space-y-4">
-                            <div>
-                              <label className="text-[10px] font-black uppercase tracking-widest block text-text-secondary mb-1.5">Select Remedy Profile:</label>
-                              <select
-                                value={personalityRemedy}
-                                onChange={(e) => setPersonalityRemedy(e.target.value)}
-                                className="w-full p-4.5 border border-border rounded-xl bg-bg-secondary focus:outline-none text-xs font-bold text-text-primary"
-                              >
-                                {allRemedies.map(r => (
-                                  <option key={r.id} value={r.name}>{r.name}</option>
-                                ))}
-                              </select>
-                            </div>
-                            <button
-                              onClick={() => {
-                                handleAnalyzeWithAi(`Provide a vivid Remedy Snapshot of "${personalityRemedy}". Format your response with:
-                                  - CONSTITUTION & PHYSICAL BUILD
-                                  - PSYCHOLOGICAL TEMPERAMENT & FEARS
-                                  - DESIRES & AVERSIONS
-                                  - THERMAL STATE & SLEEP DYNAMICS
-                                  - CORE PHYSICAL MODALITIES
-                                  - BHMS EXAMS PEARLS: (High-yield points for BHMS theory and AIAPGET aspirants)
-                                  - MEMORY ANCHOR MNEMONIC: (Create an ingenious, easy memory trick/mnemonic to remember this remedy's prime modalities and keynotes).`);
-                              }}
-                              disabled={isAiGenerating}
-                              className="w-full py-4.5 bg-primary hover:bg-primary-dark text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md hover:shadow-xl"
-                            >
-                              <Activity className="w-4 h-4 text-accent animate-pulse" /> Generate Remedy Snapshot
-                            </button>
-                          </div>
-                        )}
-
-                        {/* MODE 4: KEYNOTES SEARCH */}
-                        {aiSuiteMode === 'keynotes-search' && (
-                          <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-widest block text-text-secondary">Keynote sensation / symptom query:</label>
-                            <input
-                              type="text"
-                              value={keynotesQuery}
-                              onChange={(e) => setKeynotesQuery(e.target.value)}
-                              className="w-full p-4.5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 text-xs bg-bg-secondary font-bold text-text-primary shadow-inner"
-                              placeholder="e.g. splinter-like pains/sweats when sleeping/intolerance to collars..."
-                            />
-                            <button
-                              onClick={() => {
-                                handleAnalyzeWithAi(`Locate and display remedies matching the keynote sensation or symptom: "${keynotesQuery}". Format your reply EXACTLY like this:
-                                  - REMEDY: (Remedy name)
-                                  - EXACT KEYNOTE CRITERIA: (Original proving text or handbook references)
-                                  - CLINICAL PATHOLOGY SIGNIFICANCE: (Clinical meaning)
-                                  - SIMILAR COMPLEMENTARY REMEDIES: (Remedies with alternative overlapping keynotes).`);
-                              }}
-                              disabled={isAiGenerating}
-                              className="w-full py-4.5 bg-primary hover:bg-primary-dark text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md hover:shadow-xl"
-                            >
-                              <Search className="w-4 h-4 text-accent" /> Search Keynotes Archive DB
-                            </button>
-                          </div>
-                        )}
-
-                        {/* MODE 5: CLINICAL CASES */}
-                        {aiSuiteMode === 'clinical-cases' && (
-                          <div className="space-y-4 max-h-[460px] overflow-y-auto pr-3 scrollbar">
-                            <div className="grid grid-cols-3 gap-3">
-                              <div>
-                                <label className="text-[9px] font-black uppercase tracking-widest block text-text-secondary mb-1">Age:</label>
-                                <input
-                                  type="text"
-                                  value={caseAge}
-                                  onChange={(e) => setCaseAge(e.target.value)}
-                                  className="w-full p-3 border border-border rounded-xl text-xs bg-bg-secondary font-bold text-text-primary focus:outline-none"
-                                />
-                              </div>
-                              <div>
-                                <label className="text-[9px] font-black uppercase tracking-widest block text-text-secondary mb-1">Gender:</label>
-                                <select
-                                  value={caseGender}
-                                  onChange={(e) => setCaseGender(e.target.value)}
-                                  className="w-full p-3 border border-border rounded-xl text-xs bg-bg-secondary font-bold text-text-primary focus:outline-none"
-                                >
-                                  <option value="Male">Male</option>
-                                  <option value="Female">Female</option>
-                                  <option value="Unspecified">Other</option>
-                                </select>
-                              </div>
-                              <div>
-                                <label className="text-[9px] font-black uppercase tracking-widest block text-text-secondary mb-1">Diagnosis:</label>
-                                <input
-                                  type="text"
-                                  value={caseDiagnosis}
-                                  onChange={(e) => setCaseDiagnosis(e.target.value)}
-                                  className="w-full p-3 border border-border rounded-xl text-xs bg-bg-secondary font-bold text-text-primary focus:outline-none"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="space-y-2">
-                              <label className="text-[9px] font-black uppercase tracking-widest block text-text-secondary">🧠 Mental &amp; Emotional Symptoms:</label>
-                              <textarea
-                                value={caseMental}
-                                onChange={(e) => setCaseMental(e.target.value)}
-                                rows={2}
-                                className="w-full p-3 border border-border rounded-xl text-xs bg-bg-secondary font-serif text-text-primary focus:outline-none"
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <label className="text-[9px] font-black uppercase tracking-widest block text-text-secondary">🦴 Physical Particulars &amp; Desires/Somatic Appetite:</label>
-                              <textarea
-                                value={casePhysical}
-                                onChange={(e) => setCasePhysical(e.target.value)}
-                                rows={2}
-                                className="w-full p-3 border border-border rounded-xl text-xs bg-bg-secondary font-serif text-text-primary focus:outline-none"
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <label className="text-[9px] font-black uppercase tracking-widest block text-text-secondary">🌡️ Modalities, Thermal, Aggravations:</label>
-                              <textarea
-                                value={caseModalities}
-                                onChange={(e) => setCaseModalities(e.target.value)}
-                                rows={2}
-                                className="w-full p-3 border border border-border rounded-xl text-xs bg-bg-secondary font-serif text-text-primary focus:outline-none"
-                              />
-                            </div>
-
-                            <button
-                              onClick={() => {
-                                handleAnalyzeWithAi(`Perform a formal clinical case analysis for the following patient:
-                                  - Age: ${caseAge}, Gender: ${caseGender}
-                                  - Diagnosis: ${caseDiagnosis}
-                                  - Mental & Emotional Symptoms: ${caseMental}
-                                  - Physical Symptoms & Somatic Cravings: ${casePhysical}
-                                  - Environmental/Modalities Triggers: ${caseModalities}
-                                  Generate:
-                                  1. PATHOLOGICAL & MIASMATIC CASE ANALYSIS
-                                  2. REMEDY RANKING (Assign confidence scores % e.g., Arsenicum Album 90%, Lycopodium 75%)
-                                  3. DIFFERENTIAL ANALYSIS (Differentiating the top possibilities)
-                                  4. BHMS CLASSICAL STUDY GUIDELINES & CLINICAL LEARNING NOTES.`);
-                              }}
-                              disabled={isAiGenerating}
-                              className="w-full py-4.5 bg-primary hover:bg-primary-dark text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md hover:shadow-xl"
-                            >
-                              <Network className="w-4 h-4 text-accent animate-spin-slow" /> Process Clinical Case
-                            </button>
-                          </div>
-                        )}
-
-                        {/* MODE 6: KENT REPERTORY */}
-                        {aiSuiteMode === 'kent-repertory' && (
-                          <div className="space-y-3">
-                            <label className="text-[10px] font-black uppercase tracking-widest block text-text-secondary">Describe symptoms to map to the Repertory Index:</label>
-                            <textarea
-                              value={symptomsInput}
-                              onChange={(e) => setSymptomsInput(e.target.value)}
-                              rows={4}
-                              className="w-full h-28 p-4 border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 text-xs bg-bg-secondary font-serif text-text-primary leading-relaxed shadow-inner"
-                              placeholder="e.g. Anxiety about health, Restlessness after midnight, Cold drinks aggravate..."
-                            />
-                            <button
-                              onClick={() => {
-                                handleAnalyzeWithAi(`Act as an expert Kent Repertory system. Map these symptoms: "${symptomsInput}". Output:
-                                  - RUBRICS IDENTIFIED: (Identify classic Kent labels, e.g. 'MIND - ANXIETY - health, about')
-                                  - RUBRICS WITH REMEDIES: (List remedies under each rubric with degrees/grades, e.g., 3-grade, 2-grade, 1-grade)
-                                  - REPERTORIZATION RANKING: (Score and rank remedies based on mathematical rubric coverage)
-                                  - REPERTORIZATION MATRIX: (Draw a simple visual markdown repertorization table illustrating rubric overlap).`);
-                              }}
-                              disabled={isAiGenerating}
-                              className="w-full py-4.5 bg-primary hover:bg-primary-dark text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md hover:shadow-xl"
-                            >
-                              <Layers className="w-4 h-4 text-accent" /> Extract Rubrics &amp; Repertorize
-                            </button>
-                          </div>
-                        )}
-
-                        {/* MODE 7: AIAPGET MODE */}
-                        {aiSuiteMode === 'aiapget-mode' ? (
-                          <div className="space-y-5 animate-fade bg-slate-50 dark:bg-zinc-850 p-6 rounded-3xl border border-border">
-                            <div className="flex justify-between items-center pb-2.5 border-b border-border">
-                              <span className="text-[10px] font-black uppercase tracking-widest text-[#FAF8F5] bg-accent px-3 py-1 rounded-full">AIAPGET Board practice MCQ</span>
-                              <span className="text-[10px] font-black uppercase tracking-wide text-primary">Score: {quizScore}/{AIAPGET_QUESTIONS.length}</span>
-                            </div>
-
-                            <div className="space-y-4">
-                              <div className="flex items-center gap-2 text-[10px] text-accent font-extrabold uppercase tracking-widest">
-                                <Star className="w-4 h-4 text-accent fill-accent shrink-0 animate-pulse" />
-                                <span>MCQ #{quizIdx + 1} &middot; {AIAPGET_QUESTIONS[quizIdx].category}</span>
-                              </div>
-                              <h3 className="text-xs font-bold font-serif text-text-primary leading-relaxed">
-                                {AIAPGET_QUESTIONS[quizIdx].question}
-                              </h3>
-
-                              <div className="flex flex-col gap-2.5 pt-2">
-                                {AIAPGET_QUESTIONS[quizIdx].options.map((opt, oIdx) => {
-                                  let btnClass = "bg-white dark:bg-zinc-900 border-border text-text-primary hover:border-primary/50 hover:bg-primary/5";
-                                  if (quizIsAnswered) {
-                                    if (opt === AIAPGET_QUESTIONS[quizIdx].answer) {
-                                      btnClass = "bg-emerald-500 border-emerald-600 text-white font-bold pointer-events-none";
-                                    } else if (quizSelectedOption === opt) {
-                                      btnClass = "bg-red-500 border-red-600 text-white font-bold pointer-events-none";
-                                    } else {
-                                      btnClass = "bg-white text-text-secondary border-border opacity-50 pointer-events-none";
-                                    }
-                                  }
-
-                                  return (
-                                    <button
-                                      key={oIdx}
-                                      onClick={() => {
-                                        if (quizIsAnswered) return;
-                                        setQuizSelectedOption(opt);
-                                        setQuizIsAnswered(true);
-                                        if (opt === AIAPGET_QUESTIONS[quizIdx].answer) {
-                                          setQuizScore(prev => prev + 1);
-                                        }
-                                      }}
-                                      className={`p-4 rounded-2xl border text-xs text-left transition-all cursor-pointer ${btnClass}`}
-                                    >
-                                      <span className="font-extrabold mr-2 uppercase tracking-tight">{String.fromCharCode(65 + oIdx)}.</span> {opt}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-
-                              {quizIsAnswered && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: 5 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  className="space-y-4 bg-primary/5 p-5 border border-primary/20 rounded-2xl animate-fade"
-                                >
-                                  <p className="text-xs text-primary leading-relaxed font-medium">
-                                    <strong className="text-emerald-600 block uppercase text-[10px] pb-1">💡 Professional Explanation &amp; Pearl:</strong>
-                                    {AIAPGET_QUESTIONS[quizIdx].pearl}
-                                  </p>
-
-                                  <div className="flex gap-2.5">
-                                    {quizIdx < AIAPGET_QUESTIONS.length - 1 ? (
-                                      <button
-                                        onClick={() => {
-                                          setQuizIdx(prev => prev + 1);
-                                          setQuizSelectedOption(null);
-                                          setQuizIsAnswered(false);
-                                        }}
-                                        className="flex-1 py-3 bg-primary text-white font-black text-[9px] uppercase tracking-widest rounded-xl transition-all cursor-pointer hover:bg-primary-dark"
-                                      >
-                                        Next Question
-                                      </button>
-                                    ) : (
-                                      <button
-                                        onClick={() => {
-                                          setQuizIdx(0);
-                                          setQuizSelectedOption(null);
-                                          setQuizIsAnswered(false);
-                                          setQuizScore(0);
-                                        }}
-                                        className="flex-1 py-3 bg-zinc-200 hover:bg-zinc-300 text-zinc-800 font-black text-[9px] uppercase tracking-widest rounded-xl transition-all cursor-pointer"
-                                      >
-                                        Reset MCQ Board
-                                      </button>
-                                    )}
-
-                                    <button
-                                      onClick={() => {
-                                        handleAnalyzeWithAi(`Generate a highly challenging, board exam level multiple-choice question on classical Homoeopathic materia medica tailored for an AIAPGET aspirant. Include 4 options, the correct answer, and an in-depth clinical explanation pearl.`);
-                                      }}
-                                      className="py-3 px-4 bg-accent hover:bg-accent-light text-white font-black text-[9px] uppercase tracking-widest rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow"
-                                    >
-                                      <Sparkles className="w-3.5 h-3.5" /> Custom AI Board MCQ
-                                    </button>
-                                  </div>
-                                </motion.div>
-                              )}
-                            </div>
-                          </div>
-                        ) : null}
-
-                        {/* MODE 8: STUDY NOTES */}
-                        {aiSuiteMode === 'study-notes' && (
-                          <div className="space-y-4">
-                            <div>
-                              <label className="text-[10px] font-black uppercase tracking-widest block text-text-secondary mb-1.5">Configure Target Remedy:</label>
-                              <select
-                                value={studyNotesRemedy}
-                                onChange={(e) => setStudyNotesRemedy(e.target.value)}
-                                className="w-full p-4.5 border border-border rounded-xl bg-bg-secondary focus:outline-none text-xs font-bold text-text-primary"
-                              >
-                                {allRemedies.map(r => (
-                                  <option key={r.id} value={r.name}>{r.name}</option>
-                                ))}
-                              </select>
-                            </div>
-                            <button
-                              onClick={() => {
-                                handleAnalyzeWithAi(`Draft high-yield academic study notes for the BHMS syllabus regarding "${studyNotesRemedy}". Compile:
-                                  - SHORT CORE NOTES: (Easy to digest review)
-                                  - DETAILED LONG ESSAY OUTLINE: (Introduction, Common Name, Family, Prover, Constitution, Mental Generals, Physical Generals, Head-to-Toe Particulars, Modalities, and Relationships)
-                                  - VIVA VOCE CORBELS: (Important oral test questions & standard answers)
-                                  - REVISION MEMORY CARDS: (Highlighting high-affinity clinical spheres and keynotes).`);
-                              }}
-                              disabled={isAiGenerating}
-                              className="w-full py-4.5 bg-primary hover:bg-primary-dark text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md hover:shadow-xl"
-                            >
-                              <FileText className="w-4 h-4 text-accent animate-pulse" /> Generate BHMS Revision Notes
-                            </button>
-                          </div>
-                        )}
-
-                        {/* MODE 9: VIVA QUESTIONS */}
-                        {aiSuiteMode === 'viva-questions' && (
-                          <div className="space-y-5">
-                            <div className="bg-slate-50 dark:bg-zinc-850 p-6 rounded-3xl border border-border space-y-4 shadow-sm">
-                              <span className="text-[10px] font-black uppercase tracking-widest text-[#FAF8F5] bg-accent px-3 py-1 rounded-full w-fit block">Standard Viva Board Voce</span>
-                              <div className="space-y-4">
-                                {VIVA_QUESTIONS.map((v, vIdx) => (
-                                  <details key={vIdx} className="group border-b border-border pb-3.5 last-of-type:border-b-0 last-of-type:pb-0">
-                                    <summary className="flex items-center justify-between font-serif text-xs font-bold text-text-primary cursor-pointer hover:text-primary transition-colors focus:outline-none">
-                                      <span>🧑‍🏫 Question {vIdx + 1}: {v.q}</span>
-                                      <ChevronRight className="w-4 h-4 text-text-secondary group-open:rotate-90 transition-transform shrink-0" />
-                                    </summary>
-                                    <div className="mt-3.5 p-4 bg-white rounded-2xl border border-border shadow-inner text-xs leading-relaxed text-text-secondary font-medium pl-6 border-l-4 border-l-accent">
-                                      <strong className="text-accent uppercase text-[9px] block mb-1 tracking-widest">Expected Student Response:</strong>
-                                      {v.a}
-                                    </div>
-                                  </details>
-                                ))}
-                              </div>
-                            </div>
-
-                            <div className="space-y-4">
-                              <label className="text-[10px] font-black uppercase tracking-widest block text-text-secondary">Generate board-level questions for specific remedy:</label>
-                              <select
-                                value={studyNotesRemedy}
-                                onChange={(e) => setStudyNotesRemedy(e.target.value)}
-                                className="w-full p-4 border border-border rounded-xl bg-bg-secondary focus:outline-none text-xs font-bold text-text-primary"
-                              >
-                                {allRemedies.map(r => (
-                                  <option key={r.id} value={r.name}>{r.name}</option>
-                                ))}
-                              </select>
-                              <button
-                                onClick={() => {
-                                  handleAnalyzeWithAi(`Generate highly predictable oral viva questions that examiners ask BHMS medical students about "${studyNotesRemedy}". Provide 5-6 questions, standard expected medical student answers, and grading rubrics criteria.`);
-                                }}
-                                disabled={isAiGenerating}
-                                className="w-full py-4.5 bg-primary hover:bg-primary-dark text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md"
-                              >
-                                <HelpCircle className="w-4 h-4 text-accent animate-bounce" /> Generate Custom Viva Board
-                              </button>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* MODE 10: FLASHCARDS */}
-                        {aiSuiteMode === 'flashcards' && (
-                          <div className="space-y-6 animate-fade">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-[#FAF8F5] bg-accent px-3 py-1 rounded-full w-fit block">Interative memorization drilling</span>
-                            
-                            {/* Visual card flipper deck */}
-                            <div className="relative h-48 w-full max-w-md mx-auto perspective-1000">
-                              <motion.div
-                                onClick={() => setFlashcardFlipped(!flashcardFlipped)}
-                                animate={{ rotateY: flashcardFlipped ? 180 : 0 }}
-                                transition={{ duration: 0.6, ease: 'easeOut' }}
-                                className="absolute inset-0 w-full h-full rounded-3xl cursor-pointer preserve-3d shadow-xl border border-border"
-                              >
-                                {/* Front Face */}
-                                <div className="absolute inset-0 w-full h-full backface-hidden bg-primary text-white rounded-3xl p-6 flex flex-col justify-between items-center text-center">
-                                  <span className="text-[10px] font-black uppercase tracking-widest text-[#FAF8F5]/60">Remedy Profile Flashcard</span>
-                                  <h3 className="text-3xl font-display font-black tracking-tight uppercase">{FLASHCARDS[flashcardIdx].term}</h3>
-                                  <span className="text-[9px] font-black uppercase tracking-widest text-accent animate-pulse">Click to Flip &amp; Reveal Keynotes</span>
-                                </div>
-
-                                {/* Back Face */}
-                                <div className="absolute inset-x-0 inset-y-0 w-full h-full rotate-y-180 backface-hidden bg-white rounded-3xl p-6 flex flex-col justify-between items-center text-center border-2 border-primary">
-                                  <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">Core Characteristics &amp; Modalities</span>
-                                  <p className="font-serif text-[11px] leading-relaxed text-text-primary px-2">{FLASHCARDS[flashcardIdx].definition}</p>
-                                  <span className="text-[9px] font-black uppercase tracking-widest text-text-tertiary">Click to Flip Back</span>
-                                </div>
-                              </motion.div>
-                            </div>
-
-                            {/* Flashcard Controller */}
-                            <div className="flex gap-3 justify-center max-w-md mx-auto">
-                              <button
-                                onClick={() => {
-                                  setFlashcardIdx(prev => (prev === 0 ? FLASHCARDS.length - 1 : prev - 1));
-                                  setFlashcardFlipped(false);
-                                }}
-                                className="flex-1 py-3 bg-zinc-100 text-[#0F3D75] select-all border font-bold text-xs rounded-xl transition-all hover:bg-zinc-200 cursor-pointer text-center"
-                              >
-                                Previous Card
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setFlashcardIdx(prev => (prev === FLASHCARDS.length - 1 ? 0 : prev + 1));
-                                  setFlashcardFlipped(false);
-                                }}
-                                className="flex-1 py-3 bg-primary text-white border select-all font-bold text-xs rounded-xl transition-all hover:bg-primary-dark cursor-pointer text-center"
-                              >
-                                Next Card
-                              </button>
-                            </div>
-
-                            <div className="pt-4 border-t border-border">
-                              <button
-                                onClick={() => {
-                                  handleAnalyzeWithAi(`Generate a detailed custom mental and physical flashcard summary mapping keynotes, modalites, and fears/aversions for any major classical Homoeopathic remedy that is selected at random. Print the flashcard in a beautiful, structured summary format.`);
-                                }}
-                                className="w-full py-4.5 bg-accent hover:bg-accent-light text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow"
-                              >
-                                <Sparkles className="w-4 h-4" /> AI Generate New Flashcard Profile
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Educational disclaimer footer */}
-                      <p className="text-[10px] text-zinc-500/80 leading-relaxed font-serif italic max-w-lg mt-6 bg-slate-50 dark:bg-zinc-850 p-4 border border-zinc-200 dark:border-zinc-700/60 rounded-xl leading-relaxed">
-                        ⚠️ <strong>Curiva Academic Disclaimer:</strong> This AI matches are designed strictly for educational and learning purposes in classical Homoeopathy. It should not be considered medical advice or used as a substitute for professional clinical judgment or active college curriculum provers.
-                      </p>
-                    </div>
-
-                    {/* Mode Outputs Block */}
-                    <div className="flex-grow lg:w-1/2 rounded-[1.75rem] bg-slate-50 dark:bg-zinc-950 p-6 border border-border shadow-inner flex flex-col justify-between min-h-[460px] overflow-hidden relative">
-                      
-                      {/* Output Header */}
-                      <div className="flex items-center justify-between border-b border-border pb-4 w-full shrink-0">
-                        <div className="flex items-center gap-2">
-                          <BookOpen className="w-4 h-4 text-primary" />
-                          <span className="text-[10px] font-black uppercase tracking-widest text-text-primary">Curiva Compilation Output Pane</span>
-                        </div>
-
-                        {aiOutputText && !isAiGenerating && (
-                          <div className="flex items-center gap-1.5">
-                            <button
-                              onClick={() => copyToClipboard(aiOutputText, 'Analysis notes copied to clipboard!')}
-                              className="px-2.5 py-1.5 bg-white border border-border rounded-lg text-[9px] hover:bg-primary hover:text-white transition-all text-text-secondary cursor-pointer"
-                              title="Copy notes"
-                            >
-                              Copy
-                            </button>
-                            <button
-                              onClick={() => {
-                                triggerPrint();
-                                setCopiedStatus('Opening System Print Manager to compile PDF...');
-                                setTimeout(() => setCopiedStatus(null), 3500);
-                              }}
-                              className="px-2.5 py-1.5 bg-white border border-border rounded-lg text-[9px] hover:bg-primary hover:text-white transition-all text-text-secondary cursor-pointer"
-                              title="Download PDF"
-                            >
-                              PDF
-                            </button>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Output Content */}
-                      <div className="flex-grow flex flex-col items-center justify-center p-4 overflow-y-auto no-scrollbar max-h-[500px] w-full mt-4">
-                        {isAiGenerating ? (
-                          <div className="text-center space-y-4 animate-pulse">
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                              className="w-12 h-12 rounded-full border-4 border-primary border-t-accent mx-auto"
-                            />
-                            <div className="space-y-1.5">
-                              <p className="text-xs font-black uppercase tracking-widest text-[#0F3D75]">Formulating Syllabic Case</p>
-                              <p className="text-[10px] text-text-secondary italic font-serif leading-relaxed max-w-sm">
-                                Consulting classical materia medicas, Hahnemann provers, Organon aphorisms, and weights mapped in Kent rubrics...
-                              </p>
-                            </div>
-                          </div>
-                        ) : aiOutputText ? (
-                          <div className="text-left w-full h-full font-serif text-sm leading-relaxed text-text-secondary break-anywhere prose whitespace-pre-line animate-fade pr-1">
-                            {/* Visual Title Header derived from selected mode */}
-                            <div className="pb-4 mb-4 border-b border-dashed border-border flex items-center gap-2">
-                              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
-                              <span className="text-[10px] font-black uppercase tracking-widest text-[#0F3D75]">Verified Academic Report Generated:</span>
-                            </div>
-
-                            {/* Main Body with Clean Formats */}
-                            {aiOutputText}
-                          </div>
-                        ) : (
-                          <div className="text-center space-y-4">
-                            <span className="text-5xl block animate-bounce">🔬</span>
-                            <div className="space-y-1">
-                              <p className="text-xs font-black uppercase tracking-widest text-text-secondary">Awaiting Compilation Trigger</p>
-                              <p className="text-[10px] text-text-tertiary italic max-w-xs leading-relaxed font-serif mx-auto">
-                                Configure the custom parameters in the left pane and hit the trigger button to summon Curiva's Homoeopathic team of specialists!
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            )}
+            </>
           </motion.div>
         ) : (
           /* ====================================================
-             2. GEMINI SPLIT WORKSPACE AI STUDY CANVAS
+             2. REMEDY STUDY REFERENCE
              ==================================================== */
           <motion.div
             key="materia-canvas-workspace"
             initial={{ opacity: 0, scale: 0.99 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.99 }}
-            className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[calc(100vh-180px)] min-h-[640px]"
+            className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch"
           >
-            {/* Outline list overlay */}
-            <AnimatePresence>
-              {showOutline && (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onClick={() => setShowOutline(false)}
-                  className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm xl:hidden"
-                >
-                  <motion.div 
-                    initial={{ x: '100%' }}
-                    animate={{ x: 0 }}
-                    exit={{ x: '100%' }}
-                    onClick={(e) => e.stopPropagation()}
-                    className="absolute right-0 top-0 bottom-0 w-80 bg-bg-primary p-6 shadow-2xl flex flex-col justify-between"
-                  >
-                    <div className="space-y-6">
-                      <div className="flex items-center justify-between border-b border-border pb-4">
-                        <span className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                          <TableProperties className="w-5 h-5 text-accent" /> Document Outline
-                        </span>
-                        <button onClick={() => setShowOutline(false)}>
-                          <X className="w-5 h-5 text-text-secondary" />
-                        </button>
-                      </div>
-                      
-                      <div className="space-y-1">
-                        {[
-                          { id: 'keynotes', label: '🌟 Principal Keynotes' },
-                          { id: 'mind', label: '🧠 Mental & Emotional' },
-                          { id: 'physical', label: '🫁 Physical Generals' },
-                          { id: 'modalities', label: '🌡️ Better & Worse Conditions' },
-                          { id: 'dynamics', label: '📈 Constitutional Dynamics' },
-                          { id: 'relations', label: '🔗 Drug Relations & Links' },
-                          { id: 'notes', label: '📝 Student Notebook draft' }
-                        ].map((sec) => (
-                          <button
-                            key={sec.id}
-                            onClick={() => {
-                              setActiveCanvasTab(sec.id as any);
-                              setShowOutline(false);
-                            }}
-                            className={`w-full text-left p-3.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between ${
-                              activeCanvasTab === sec.id 
-                              ? 'bg-primary/5 text-primary border-l-4 border-primary' 
-                              : 'text-text-secondary hover:bg-bg-secondary'
-                            }`}
-                          >
-                            <span>{sec.label}</span>
-                            <ChevronRight className="w-4 h-4 opacity-50" />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <p className="text-[10px] text-text-tertiary italic text-center leading-relaxed">
-                      Curiva Homoeopathy &middot; Materia Medica Workspace
-                    </p>
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Left Column: AI STUDY COMPANION SIDE CHAT (5/12 widths) */}
-            <div className="xl:col-span-5 bg-white dark:bg-zinc-900 border border-border rounded-3xl shadow-lg flex flex-col justify-between overflow-hidden relative">
-              
-              {/* Left Column Header Actions */}
-              <div className="p-4 bg-primary text-white flex items-center justify-between shadow-md shrink-0">
-                <button 
-                  onClick={() => setSelectedRemedy(null)}
-                  className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all"
-                >
-                  <ArrowLeft className="w-4 h-4 text-accent-light" /> Back to Index
-                </button>
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-accent fill-accent animate-pulse" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-[#FAF8F5]">Gemini Study Companion</span>
-                </div>
-              </div>
-
-              {/* Chat messages body */}
-              <div className="flex-grow overflow-y-auto p-5 space-y-4 no-scrollbar">
-                {chatMessages.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`flex flex-col max-w-[85%] ${
-                      msg.role === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'
-                    }`}
-                  >
-                    <div className="text-[9px] font-black text-text-tertiary uppercase tracking-wider mb-1.5 px-1 flex items-center gap-1">
-                      {msg.role === 'user' ? 'Student Workspace' : 'Curiva Research AI'}
-                    </div>
-
-                    <div
-                      className={`p-4 rounded-2xl text-xs leading-relaxed font-serif ${
-                        msg.role === 'user'
-                          ? 'bg-primary text-white rounded-tr-none'
-                          : 'bg-bg-secondary text-text-primary rounded-tl-none border border-border/60'
-                      }`}
-                    >
-                      {/* Render text with basic markdown styling for bolding and bullets */}
-                      {msg.content.split('\n').map((line, lIdx) => {
-                        let styledLine = line.trim();
-                        if (styledLine.startsWith('* ') || styledLine.startsWith('- ')) {
-                          return (
-                            <li key={lIdx} className="ml-3 my-1">
-                              {styledLine.substring(2)}
-                            </li>
-                          );
-                        }
-                        
-                        return (
-                          <p key={lIdx} className={styledLine === '' ? 'h-2' : 'my-1'}>
-                            {styledLine}
-                          </p>
-                        );
-                      })}
-
-                      {/* Add to Canvas interaction block */}
-                      {msg.role === 'assistant' && index > 0 && (
-                        <div className="mt-4 pt-3 border-t border-border/80 flex items-center gap-2">
-                          <button
-                            onClick={() => handleAppendToNotes(msg.content)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary hover:text-white text-primary rounded-lg text-[9px] font-black uppercase tracking-widest transition-all cursor-pointer"
-                          >
-                            <Plus className="w-3.5 h-3.5" /> Send to Canvas
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-
-                {isGenerating && (
-                  <div className="flex flex-col items-start max-w-[80%] mr-auto">
-                    <span className="text-[9px] font-bold text-text-tertiary uppercase mb-1">Structuring Insights...</span>
-                    <div className="p-4 bg-bg-secondary text-text-secondary text-xs rounded-2xl rounded-tl-none border border-border/60 flex items-center gap-3 italic">
-                      <motion.div 
-                        animate={{ rotate: 360 }}
-                        transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-                      >
-                        <Sparkles className="w-4 h-4 text-primary" />
-                      </motion.div>
-                      <span>Searching classical repertories & linking reference citations...</span>
-                    </div>
-                  </div>
-                )}
-                <div ref={chatScrollRef} />
-              </div>
-
-              {/* Direct Study Suggestion Prompts */}
-              {chatMessages.length === 1 && (
-                <div className="px-5 pb-2 shrink-0 space-y-2">
-                  <p className="text-[9px] text-text-tertiary font-black uppercase tracking-wider italic">Click a high-yield study focus query:</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {[
-                      { text: `🧪 Summarize keynotes of ${selectedRemedy.name}`, prompt: 'Provide a structured summary of primary keynotes.' },
-                      { text: `🧠 Decode mental constitution`, prompt: 'Examine and describe the deep psychological disposition and personality archetype of this constitutional profile.' },
-                      { text: `🌡️ Explain modalities (Better/Worse)`, prompt: 'Explain the core environmental, positional, and thermal aggravations or ameliorations.' },
-                      { text: `⚖️ Differential sister comparisons`, prompt: 'Draft a comparative differential matrix contrasting this remedy name with its two closest sister/complementary remedies.' }
-                    ].map((btn, pIdx) => (
-                      <button
-                        key={pIdx}
-                        onClick={() => handleSendPrompt(btn.prompt)}
-                        className="p-2.5 bg-bg-secondary hover:bg-primary hover:text-white border border-border/60 rounded-xl text-[10px] font-medium text-left transition-all text-text-secondary leading-tight truncate cursor-pointer flex items-center gap-1.5"
-                      >
-                        <Sparkles className="w-3.5 h-3.5 text-accent" />
-                        <span>{btn.text}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Chat Input form */}
-              <div className="p-4 border-t border-border shrink-0 bg-bg-secondary/40">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSendPrompt(chatInput);
-                  }}
-                  className="flex gap-2"
-                >
-                  <input
-                    type="text"
-                    disabled={isGenerating}
-                    placeholder={`Ask AI about ${selectedRemedy.name}...`}
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    className="flex-grow px-4 py-3 border border-border rounded-xl text-xs bg-white focus:outline-none focus:border-primary text-text-primary placeholder-text-tertiary"
-                  />
-                  <button
-                    type="submit"
-                    disabled={isGenerating || !chatInput.trim()}
-                    className="p-3 bg-primary hover:bg-primary-dark text-white rounded-xl transition-all cursor-pointer disabled:opacity-45 disabled:cursor-not-allowed text-xs font-bold"
-                  >
-                    <Send className="w-4 h-4" />
-                  </button>
-                </form>
-              </div>
-            </div>
-
             {/* Right Column: DETAILED INTERACTIVE DOCUMENT CANVAS (7/12 widths) */}
-            <div className="xl:col-span-7 bg-bg-primary border border-border rounded-3xl shadow-lg flex flex-col justify-between overflow-hidden relative print-card">
+            <div className="xl:col-span-12 bg-bg-primary border border-border rounded-3xl shadow-lg flex flex-col justify-between overflow-hidden relative print-card">
               
               {/* Document Header actions strip */}
               <div className="p-4 bg-white dark:bg-zinc-900 border-b border-border flex items-center justify-between shrink-0 no-print">
@@ -2057,13 +927,6 @@ You can click any ready-to-study suggestion below to load insights. If you like 
                   >
                     <span>{selectedRemedy.sourceSlug ? 'Full Boericke Profile' : 'Full Portrait'}</span>
                     <ArrowUpRight className="w-3.5 h-3.5 animate-bounce" />
-                  </button>
-                  <button
-                    onClick={() => setShowOutline(!showOutline)}
-                    className="p-2 border border-border bg-bg-secondary hover:bg-white rounded-lg text-text-secondary transition-all cursor-pointer"
-                    title="Outline Index"
-                  >
-                    <TableProperties className="w-4 h-4 text-primary" />
                   </button>
                   <button
                     onClick={triggerPrint}
@@ -2539,7 +1402,7 @@ You can click any ready-to-study suggestion below to load insights. If you like 
                           />
                         ) : (
                           <div className="w-full h-full min-h-[300px] p-6 bg-white dark:bg-zinc-900 border border-border/70 rounded-2xl font-serif text-sm leading-relaxed text-text-primary shadow-soft overflow-y-auto whitespace-pre-line border-l-4 border-l-accent animate-fade">
-                            {notesContent || "Start compiling your research. Type in notes or use 'Send to Canvas' under AI answers."}
+                            {notesContent || "Add your own source-referenced study notes for this remedy."}
                           </div>
                         )}
                       </div>

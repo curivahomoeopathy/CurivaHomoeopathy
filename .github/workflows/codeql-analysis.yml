@@ -56,10 +56,6 @@ jobs:
 
       # Android Gradle is generated during CI rather than committed. Prepare
       # it before the manual build so Kotlin extraction sees the Compose app.
-      - name: Regenerate lockfile from package manifest
-        if: matrix.language == 'java-kotlin' && github.event_name == 'pull_request' && github.head_ref == 'security/issue-46-netlify-deploy-fix'
-        run: rm -f package-lock.json && npm install --package-lock-only --ignore-scripts
-
       - name: Install JavaScript and TypeScript dependencies
         if: matrix.language == 'java-kotlin'
         run: npm ci

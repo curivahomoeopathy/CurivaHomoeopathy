@@ -1,33 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  BookOpen, 
-  Menu, 
-  X, 
-  Search, 
-  Bookmark, 
-  Sparkles, 
-  Send, 
-  ArrowLeft, 
-  ArrowRight,
-  Sun, 
-  Moon, 
-  Volume2, 
-  VolumeX, 
-  Loader2, 
-  Check, 
-  Info,
-  ChevronRight,
-  User,
-  Activity,
-  Award,
-  AlertTriangle,
-  Leaf,
-  Brain,
-  Coffee,
-  CheckCircle,
-  Hash
+import {
+  Menu, X, Search, Bookmark, ArrowLeft, ArrowRight, Sun, Check, Info, BookOpen
 } from "lucide-react";
 import SEO from "../components/SEO";
 import SafeHtmlContent from "../components/SafeHtmlContent";
@@ -725,7 +700,7 @@ export default function HairFallGuide() {
         <h2 class="text-3xl md:text-4xl font-serif font-black text-slate-900 dark:text-white mb-6">Hair-Health Study Planner</h2>
         <p class="mb-4">Hair loss has many possible causes and an individual assessment is needed to understand a person's circumstances. This section provides general educational reading prompts; it does not assess symptoms or choose treatment.</p>
 
-        <p class="mb-4">Choose a general topic to generate an educational checklist. Do not enter personal health details, patient information, or test results in the AI assistant.</p>
+        <p class="mb-4">Choose a topic in the guide and use the chapter checklist to organise your own study.</p>
       `
     },
     {
@@ -819,7 +794,6 @@ export default function HairFallGuide() {
 
   const [fontSizeMultiplier, setFontSizeMultiplier] = useState<number>(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-  const [isCoachOpen, setIsCoachOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -903,22 +877,6 @@ export default function HairFallGuide() {
     }
   });
 
-  // AI Personalized Plan State (Chapter 24)
-  const [aiPlanInput, setAiPlanInput] = useState<string>("");
-  const [aiPlanOutput, setAiPlanOutput] = useState<string>("");
-  const [isGeneratingPlan, setIsGeneratingPlan] = useState<boolean>(false);
-  const [planError, setPlanError] = useState<string>("");
-
-  // AI Scalp Coach Chat state
-  const [chatInput, setChatInput] = useState<string>("");
-  const [isCoachTyping, setIsCoachTyping] = useState<boolean>(false);
-  const [chatMessages, setChatMessages] = useState<Array<{ sender: "user" | "coach"; text: string; isError?: boolean }>>([
-    {
-      sender: "coach",
-      text: "Hello! I am your ✨ **Curiva AI Hair-Health Study Assistant**.\n\nI can explain general hair biology and help you study health information. I cannot diagnose hair loss or create a personal treatment plan. For personal concerns, consult a qualified registered medical practitioner or dermatologist. Please do not share identifying or sensitive patient information."
-    }
-  ]);
-
   // Notification Toast State
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -927,7 +885,6 @@ export default function HairFallGuide() {
     return document.documentElement.classList.contains("dark");
   });
 
-  const chatMessagesEndRef = useRef<HTMLDivElement>(null);
 
   // Parse direct chapter query link on mount
   useEffect(() => {
@@ -946,13 +903,6 @@ export default function HairFallGuide() {
       console.error("Error reading chapter query param:", e);
     }
   }, [BOOK_DATA.length]);
-
-  // Sync scroll on chat messages
-  useEffect(() => {
-    if (chatMessagesEndRef.current) {
-      chatMessagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [chatMessages, isCoachTyping]);
 
   // Save last visited chapter
   useEffect(() => {
@@ -996,7 +946,6 @@ export default function HairFallGuide() {
       } else if (e.key === "Escape") {
         setIsSearchOpen(false);
         setIsSidebarOpen(false);
-        setIsCoachOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -1080,65 +1029,6 @@ export default function HairFallGuide() {
     return { text: "Excellent foundation! Keep shining! 🌱", color: "text-emerald-500 font-bold" };
   };
 
-  // External personal hair-health coaching is disabled. Free-text symptoms,
-  // health details, and routine information are not sent to a third-party model.
-  const generateCustomAIPlan = async () => {
-    setAiPlanOutput('');
-    setPlanError('Personalized AI hair-health planning is disabled to protect health information. This page remains a general educational guide. Please consult a qualified registered medical practitioner or dermatologist for personal advice.');
-  };
-
-  const handleSendChatMessage = async (presetText?: string) => {
-    const textToSend = presetText || chatInput.trim();
-    if (!textToSend) return;
-    if (!presetText) setChatInput('');
-    setChatMessages(prev => [
-      ...prev,
-      { sender: 'user' as const, text: textToSend },
-      { sender: 'coach' as const, text: 'This personalized AI health-chat feature has been paused. Your message was not sent. Please use the general educational chapters and consult a qualified registered medical practitioner or dermatologist for personal concerns.' }
-    ]);
-  };
-
-  // Parse custom markdown tags
-  const renderFormattedMarkdown = (text: string) => {
-    return text.split("\n\n").map((paragraph, index) => {
-      const lines = paragraph.split("\n");
-      const first = lines[0] || "";
-      if (first.startsWith("### ")) {
-        return <h4 key={index} className="mb-2 mt-4 text-base font-bold text-slate-900 dark:text-white">{first.slice(4)}</h4>;
-      }
-      if (first.startsWith("## ")) {
-        return <h3 key={index} className="mb-3 mt-6 font-serif text-lg font-bold text-slate-900 dark:text-white">{first.slice(3)}</h3>;
-      }
-      if (first.startsWith("- ")) {
-        return (
-          <ul key={index} className="my-3 space-y-1">
-            {lines.map((line, lineIndex) => (
-              <li key={lineIndex} className="my-1.5 flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300">
-                <CheckCircle className="mt-1 h-4 w-4 shrink-0 text-emerald-600" />
-                <span>{line.replace(/^\-\s*/, "").trim()}</span>
-              </li>
-            ))}
-          </ul>
-        );
-      }
-
-      const parts = paragraph.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
-      return (
-        <p key={index} className="mb-4 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-          {parts.map((part, partIndex) => {
-            if (part.startsWith("**") && part.endsWith("**")) {
-              return <strong key={partIndex}>{part.slice(2, -2)}</strong>;
-            }
-            if (part.startsWith("*") && part.endsWith("*")) {
-              return <em key={partIndex}>{part.slice(1, -1)}</em>;
-            }
-            return <React.Fragment key={partIndex}>{part}</React.Fragment>;
-          })}
-        </p>
-      );
-    });
-  };
-
   // Define focus goals array for Chapter 24
   const focusPlans: Record<string, { title: string; desc: string; items: string[] }> = {
     student: {
@@ -1190,7 +1080,7 @@ export default function HairFallGuide() {
     <>
       <SEO 
         title="Interactive Hair Fall Recovery Guide | Curiva" 
-        description="Explore educational reading on hair health, practical study prompts, and a general AI hair-health study assistant."
+        description="Explore human-authored educational reading on hair biology, common causes of hair loss and general health guidance."
       />
 
       <div className={`min-h-screen font-sans flex flex-col relative overflow-hidden transition-colors duration-300 ${getPageBackgroundClass()}`}>
@@ -1311,20 +1201,6 @@ export default function HairFallGuide() {
                 A+
               </button>
             </div>
-
-            {/* AI Coach Trigger button */}
-            <button 
-              onClick={() => setIsCoachOpen(true)}
-              className="p-2 bg-primary-light hover:bg-primary/20 text-primary rounded-xl transition flex items-center gap-1.5 font-bold text-xs shadow-sm"
-              title="Open AI Hair-Health Study Assistant"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-dark"></span>
-              </span>
-              <Sparkles className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Study Assistant</span>
-            </button>
 
             {/* Close Ebook to articles */}
             <button 
@@ -1495,78 +1371,15 @@ export default function HairFallGuide() {
                     </AnimatePresence>
                   </div>
 
-                  {/* Step 2: Personalized AI Plan customized using Gemini */}
-                  <div className="bg-bg-secondary/40 dark:bg-zinc-900/40 p-6 rounded-2xl border-2 border-dashed border-border">
-                    <span className="text-[10px] uppercase font-black tracking-wider text-primary dark:text-primary flex items-center gap-1.5 mb-2">
-                      <Sparkles className="w-3.5 h-3.5 text-primary" />
-                      <span>STEP 2: GENERAL STUDY CHECKLIST</span>
-                    </span>
-                    <h3 className="font-serif font-black text-lg text-text-primary mb-1">
-                      ✨ AI Hair-Health Study Checklist
-                    </h3>
-                    <p className="text-xs text-text-secondary mb-4">
-                      Enter a general academic topic to generate a short educational checklist. Do not enter personal health details, test results, or patient information.
-                    </p>
-
-                    <div role="note" className="mb-3 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-[11px] text-text-secondary">
-                      <strong className="block text-amber-800 dark:text-amber-200 mb-1">Educational information only</strong>
-                      This checklist cannot diagnose hair loss or recommend an individualized plan, test, medicine, supplement, or remedy. Do not change prescribed care based on AI output. Consult a qualified registered medical practitioner or dermatologist for personal health concerns. Personalized AI coaching is currently disabled. Text entered in this page is not submitted to an external AI service. Do not enter patient or personally identifiable health information.
-                    </div>
-                    <div className="space-y-3">
-                      <textarea
-                        value={aiPlanInput}
-                        onChange={(e) => setAiPlanInput(e.target.value)}
-                        rows={3}
-                        maxLength={400}
-                        placeholder="e.g. Explain common causes of hair shedding in general terms."
-                        className="w-full p-3.5 bg-bg-primary rounded-xl border border-border text-xs md:text-sm outline-none focus:ring-1 focus:ring-primary transition resize-none"
-                      />
-
-                      <button
-                        onClick={generateCustomAIPlan}
-                        disabled={isGeneratingPlan}
-                        className="w-full py-3 bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-bold rounded-xl text-xs md:text-sm transition flex items-center justify-center gap-2"
-                      >
-                        {isGeneratingPlan ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            <span>Crafting Ebook Blueprint...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Sparkles className="w-4 h-4" />
-                            <span>Generate Custom AI Plan</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-
-                    {/* AI plan results renderer */}
-                    {isGeneratingPlan && (
-                      <div className="mt-4 p-4 bg-bg-primary rounded-xl border border-border flex items-center gap-2.5 text-xs text-text-secondary animate-pulse">
-                        <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                        <span>Analysing schedule vectors & compiling hair-wellness regimens...</span>
-                      </div>
-                    )}
-
-                    {planError && (
-                      <div className="mt-4 p-3.5 bg-red-50 dark:bg-red-950/20 text-red-800 dark:text-red-400 rounded-xl flex items-start gap-2 text-xs">
-                        <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
-                        <div>
-                          <strong>Retrieval Error:</strong> {planError}
-                        </div>
-                      </div>
-                    )}
-
-                    {aiPlanOutput && (
-                      <div className="mt-6 p-5 bg-card/60 rounded-xl border border-border prose dark:prose-invert max-w-none text-xs md:text-sm">
-                        <div className="border-b border-border pb-2 mb-3 flex items-center justify-between">
-                          <span className="font-bold text-[10px] tracking-wide text-primary dark:text-primary uppercase">✨ General Educational Checklist</span>
-                          <button onClick={() => setAiPlanOutput("")} className="text-[10px] text-text-secondary hover:text-text-primary">Dismiss</button>
-                        </div>
-                        {renderFormattedMarkdown(aiPlanOutput)}
-                      </div>
-                    )}
+                  <div className="rounded-2xl border border-border bg-bg-secondary/40 p-6">
+                    <h3 className="font-serif font-black text-lg text-text-primary mb-2">Study checklist</h3>
+                    <p className="text-xs text-text-secondary mb-3">Use this manually selected checklist to organise general reading. It does not assess personal health or generate an individual plan.</p>
+                    <ul className="space-y-2 text-xs text-text-secondary">
+                      <li>Review the hair-growth cycle and normal shedding.</li>
+                      <li>Read about common medical and lifestyle factors associated with hair loss.</li>
+                      <li>Record questions to discuss with a qualified medical practitioner when appropriate.</li>
+                      <li>Use the chapter bookmarks and reading progress controls for revision.</li>
+                    </ul>
                   </div>
                 </div>
               )}
@@ -1663,122 +1476,6 @@ export default function HairFallGuide() {
                 <div className="p-4 border-t border-border bg-bg-secondary/40 text-center">
                   <p className="text-[10px] uppercase text-text-secondary tracking-widest">&copy; 2026 Curiva Homoeopathy</p>
                   <p className="text-[10px] font-black text-primary tracking-wider mt-1">Tiny Doses. True Shifts.</p>
-                </div>
-              </motion.aside>
-            </>
-          )}
-        </AnimatePresence>
-
-        {/* Collapsible CO-OP AI COACH Sidebar Drawer */}
-        <AnimatePresence>
-          {isCoachOpen && (
-            <>
-              {/* Back clickout */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsCoachOpen(false)}
-                className="fixed inset-0 bg-black/55 backdrop-blur-sm z-50 transition-opacity"
-              />
-
-              <motion.aside 
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "spring", damping: 25, stiffness: 220 }}
-                className="fixed top-0 right-0 h-full w-96 max-w-[90vw] bg-bg-primary border-l border-border z-50 flex flex-col"
-              >
-                <div className="p-4 border-b border-border flex justify-between items-center bg-primary-light/60 dark:bg-zinc-900">
-                  <span className="font-serif font-black text-primary dark:text-primary-light flex items-center gap-1.5 text-sm uppercase">
-                    <Sparkles className="w-4.5 h-4.5 text-primary" />
-                    <span>Curiva AI Hair-Health Study Assistant</span>
-                  </span>
-                  <button 
-                    onClick={() => setIsCoachOpen(false)}
-                    className="p-1 hover:bg-border/60 rounded-xl transition text-text-secondary"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-
-                <div role="note" className="border-b border-amber-500/30 bg-amber-500/5 px-4 py-3 text-[10px] leading-relaxed text-text-secondary">
-                  <strong className="text-amber-800 dark:text-amber-200">Educational use only — not medical advice.</strong> This assistant cannot diagnose or create treatment plans. Do not start or change medicines, supplements, homoeopathic products, or prescribed care based on a response. For personal concerns, consult a qualified registered medical practitioner or dermatologist. Personalized AI coaching is currently disabled. Chat text is not submitted to an external AI service. Do not enter patient or personally identifiable health information.
-                </div>
-
-                {/* Message area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-bg-secondary/20">
-                  {chatMessages.map((msg, idx) => (
-                    <div 
-                      key={idx} 
-                      className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-                    >
-                      <div className={`p-3.5 rounded-2xl max-w-[85%] shadow-sm ${msg.sender === "user" ? "bg-primary text-white rounded-tr-none" : msg.isError ? "bg-red-50 dark:bg-red-950/20 text-red-900 border-l-4 border-red-500 rounded-tl-none text-xs" : "bg-bg-primary rounded-tl-none"}`}>
-                        {msg.sender === "coach" && (
-                          <span className="text-[10px] uppercase font-black text-primary dark:text-primary-light block mb-1">
-                            ✨ Study Assistant
-                          </span>
-                        )}
-                        <div className="text-xs md:text-sm leading-relaxed whitespace-pre-wrap">
-                          {msg.sender === "coach" ? renderFormattedMarkdown(msg.text) : msg.text}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Coach typing loader */}
-                  {isCoachTyping && (
-                    <div className="flex justify-start">
-                      <div className="p-3 bg-bg-primary border border-border rounded-2xl rounded-tl-none flex items-center gap-2 text-xs text-text-secondary">
-                        <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                        <span>Study Assistant is preparing an educational response...</span>
-                      </div>
-                    </div>
-                  )}
-
-                  <div ref={chatMessagesEndRef} />
-                </div>
-
-                {/* suggested prompts shortcuts */}
-                {chatMessages.length <= 2 && (
-                  <div className="px-4 py-3 border-t border-border bg-bg-secondary space-y-1.5">
-                    <span className="text-[9px] uppercase tracking-wider font-semibold text-text-secondary">Suggested Prompts</span>
-                    {[
-                      { l: "Why does chronic stress hit 3 months later?", q: "Explain why stress shows up as delayed hair shedding 3 months later." },
-                      { l: "Affordable protein sources for hostel mess", q: "What are some highly affordable vegetarian protein sources for a hostel student?" },
-                      { l: "Homoepathy perspective on hair oil myths", q: "How does classical homoeopathic individualization view commercial hair oil myths?" }
-                    ].map((btnText, i) => (
-                      <button
-                        key={i}
-                        onClick={() => handleSendChatMessage(btnText.q)}
-                        className="w-full text-left p-2.5 bg-bg-primary hover:bg-primary-light/50 hover:text-primary border border-border rounded-xl text-[11px] font-semibold text-text-primary transition flex justify-between items-center"
-                      >
-                        <span>💡 {btnText.l}</span>
-                        <ChevronRight className="w-3.5 h-3.5 opacity-60" />
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Input box */}
-                <div className="p-3 border-t border-border bg-bg-primary flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    maxLength={4000}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleSendChatMessage();
-                    }}
-                    placeholder="Ask a general hair-health study question..."
-                    className="flex-1 p-2.5 bg-bg-secondary rounded-xl border border-border text-xs md:text-sm outline-none focus:ring-1 focus:ring-primary focus:bg-bg-primary transition"
-                  />
-                  <button
-                    onClick={() => handleSendChatMessage()}
-                    className="p-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl transition flex justify-center items-center h-10 w-10 shrink-0"
-                  >
-                    <Send className="w-4 h-4" />
-                  </button>
                 </div>
               </motion.aside>
             </>

@@ -1,4 +1,4 @@
-import { validateAcademicAiText } from '../server/aiPrivacyGuard';
+import { validateSubmittedText } from '../utils/validateSubmittedText';
 import { 
   db, 
   auth, 
@@ -57,8 +57,8 @@ function sortCreatedDesc(questions: Question[]): Question[] {
 export const questionService = {
   async submitQuestion(subject: string, content: string, isAnonymous: boolean) {
     if (!auth.currentUser) throw new Error('User must be signed in to ask a question');
-    const safeSubject = validateAcademicAiText(subject, 200);
-    const safeContent = validateAcademicAiText(content, 2000);
+    const safeSubject = validateSubmittedText(subject, 200);
+    const safeContent = validateSubmittedText(content, 2000);
     if (!safeSubject.ok || safeSubject.text.length < 5) {
       throw new Error('Please enter an academic question title between 5 and 200 characters.');
     }

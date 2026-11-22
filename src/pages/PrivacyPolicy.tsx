@@ -9,7 +9,7 @@ export default function PrivacyPolicy() {
     <div className="min-h-screen bg-bg-primary pb-20 pt-24 transition-colors">
       <SEO
         title="Privacy & Data Protection | Curiva Homoeopathy"
-        description="How Curiva currently handles account, study, appointment, payment and optional AI data, and the limits of the current controls."
+        description="How Curiva handles account, study, appointment and payment data, and the limits of the current controls."
       />
       <motion.main initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-4xl space-y-8 px-4 sm:px-6 lg:px-8">
         <header className="space-y-4">
@@ -26,7 +26,7 @@ export default function PrivacyPolicy() {
         <section className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5">
           <h2 className="flex items-center gap-2 font-bold text-text-primary"><AlertTriangle className="h-5 w-5 text-amber-600" /> Important health-information boundary</h2>
           <p className="mt-2 text-sm leading-7 text-text-secondary">
-            Do not enter patient names, phone numbers, addresses, identity numbers, medical-record numbers, photographs, diagnoses, lab reports, prescriptions, clinical case histories, or other identifiable or sensitive health information into study notes, AI tools, feedback, social messages, profile fields, or general website forms. Curiva's study and education tools are not designed or approved for storing patient records.
+            Do not enter patient names, phone numbers, addresses, identity numbers, medical-record numbers, photographs, diagnoses, lab reports, prescriptions, clinical case histories, or other identifiable or sensitive health information into study notes, feedback, social messages, profile fields, or general website forms. Curiva's study and education tools are not designed or approved for storing patient records.
           </p>
         </section>
 
@@ -45,15 +45,9 @@ export default function PrivacyPolicy() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-2xl font-bold text-text-primary">2. AI features and external processing</h2>
+          <h2 className="text-2xl font-bold text-text-primary">2. Generative AI and automated content</h2>
           <p className="text-sm leading-7 text-text-secondary">
-            Some academic AI features remain available only after an explicit, tab-scoped acknowledgement. When you submit an academic prompt or recent chat context, the text is sent to Curiva's server and then to Google Gemini to generate a response. The acknowledgement lasts for the current browser tab/session. Google processes submitted content under its own terms and policies. Do not submit personal, clinical, identifying or patient information even if the interface accepts it.
-          </p>
-          <p className="text-sm leading-7 text-text-secondary">
-            Curiva applies conservative pattern checks for common identifiers and health narratives before sending supported AI prompts. These checks are best-effort only; they cannot reliably identify or remove every sensitive detail. Passing a check does not make text anonymous or safe to share.
-          </p>
-          <p className="text-sm leading-7 text-text-secondary">
-            Personalized hair-health AI coaching, symptom-to-remedy analysis, patient-case analysis modes, arbitrary AI eBook generation, and external query-based research search are disabled in the current build. The personalization engine now uses a predefined role configuration and does not send profile information, search terms, open-tab titles or URLs to Gemini.
+            Curiva does not provide generative AI, LLM-powered chatbots, AI-generated study content, AI-based clinical interpretation, or AI-based remedy recommendations. Search, study planning, flashcards and assessments use conventional deterministic software and human-authored material. No study prompt or chat history is sent to a generative AI provider by the current application.
           </p>
         </section>
 
@@ -70,13 +64,12 @@ export default function PrivacyPolicy() {
         <section className="space-y-3">
           <h2 className="text-2xl font-bold text-text-primary">4. Service providers</h2>
           <p className="text-sm leading-7 text-text-secondary">
-            The current architecture uses Firebase Authentication/Firestore for account and selected learning/appointment data; Razorpay for payments; Google Gemini for explicitly acknowledged academic AI requests; Resend or another configured provider for transactional email; and Netlify/hosting and content-delivery services for delivery, functions and operational logs. Provider availability/configuration may differ by environment. Each provider processes information under its own contractual terms and privacy documentation.
+            The current architecture uses Firebase Authentication/Firestore for account and selected learning/appointment data; Razorpay for payments; Google Firebase services for authentication and learning data; Resend or another configured provider for transactional email; and Netlify/hosting and content-delivery services for delivery, functions and operational logs. Provider availability/configuration may differ by environment. Each provider processes information under its own contractual terms and privacy documentation.
           </p>
           <ul className="list-disc space-y-2 pl-6 text-sm leading-7 text-text-secondary">
             <li><a className="font-semibold text-primary underline" href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer">Firebase privacy and security information</a></li>
             <li><a className="font-semibold text-primary underline" href="https://razorpay.com/privacy/" target="_blank" rel="noopener noreferrer">Razorpay privacy policy</a></li>
-            <li><a className="font-semibold text-primary underline" href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer">Google Gemini API terms</a></li>
-            <li><a className="font-semibold text-primary underline" href="https://www.netlify.com/privacy/" target="_blank" rel="noopener noreferrer">Netlify privacy policy</a></li>
+                        <li><a className="font-semibold text-primary underline" href="https://www.netlify.com/privacy/" target="_blank" rel="noopener noreferrer">Netlify privacy policy</a></li>
           </ul>
         </section>
 
@@ -120,7 +113,7 @@ export default function PrivacyPolicy() {
         <section className="rounded-2xl border border-border bg-bg-secondary p-5">
           <h2 className="flex items-center gap-2 font-bold text-text-primary"><Database className="h-5 w-5 text-primary" /> Privacy and security status</h2>
           <p className="mt-2 text-sm leading-7 text-text-secondary">
-            We are progressively hardening account, study, appointment, AI, storage and content systems. The current source-code protections are not a substitute for a professional penetration test, Firebase/hosting configuration audit, processor-contract review or medical-content governance review.
+            We are progressively hardening account, study, appointment, storage and content systems. The current source-code protections are not a substitute for a professional penetration test, Firebase/hosting configuration audit, processor-contract review or medical-content governance review.
           </p>
           <Link to="/medical-disclaimer" className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-primary underline underline-offset-4">Read the Medical Disclaimer <ExternalLink className="h-4 w-4" /></Link>
         </section>
