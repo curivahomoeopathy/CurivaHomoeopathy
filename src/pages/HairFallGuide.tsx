@@ -1379,6 +1379,7 @@ export default function HairFallGuide() {
                       <li>Use the chapter bookmarks and reading progress controls for revision.</li>
                     </ul>
                   </div>
+                </div>
               )}
             </article>
 
