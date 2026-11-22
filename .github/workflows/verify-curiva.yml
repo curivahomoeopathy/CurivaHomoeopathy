@@ -30,10 +30,6 @@ jobs:
           node-version: 24.12.0
           cache: npm
 
-      - name: Regenerate lockfile from package manifest
-        if: github.event_name == 'pull_request' && github.head_ref == 'security/issue-46-netlify-deploy-fix'
-        run: rm -f package-lock.json && npm install --package-lock-only --ignore-scripts
-
       - name: Install locked dependencies
         run: npm ci
 
@@ -160,8 +156,8 @@ jobs:
       - name: Verify public-health content, privacy disclosure, and branding
         run: node --test tests/public-health-content.test.mjs
 
-      - name: Verify privacy, CSP, storage and AI security boundaries
-        run: npm run test:privacy-security
+      - name: Verify privacy, CSP, storage and AI-free architecture
+        run: npm run test:privacy-security && npm run test:ai-free
 
       - name: Set up Java for the Firestore emulator
         uses: actions/setup-java@v6

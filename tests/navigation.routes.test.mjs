@@ -16,15 +16,19 @@ const curivaHome = readFileSync(new URL('../src/pages/CurivaHome.tsx', import.me
 const capacitorConfig = readFileSync(new URL('../capacitor.config.ts', import.meta.url), 'utf8');
 const serverSource = readFileSync(new URL('../server.ts', import.meta.url), 'utf8');
 
-const routePaths = new Set(
-  [...app.matchAll(/<Route\s+path=["']([^"']+)["']/g)].map(match => match[1]),
-);
+const routePathList = [...app.matchAll(/<Route\s+path=["']([^"']+)["']/g)].map(match => match[1]);
+const routePaths = new Set(routePathList);
 const navigationTargets = [
   ...navigation.matchAll(/\bto:\s*['"]([^'"]+)['"]/g),
 ]
   .map(match => match[1])
   .filter(target => target.startsWith('/') && !target.includes(':') && !target.includes('#'));
 const missingRoutes = [...new Set(navigationTargets)].filter(target => !routePaths.has(target));
+
+test('App route declarations are unique before Set normalization', () => {
+  const duplicates = routePathList.filter((route, index) => routePathList.indexOf(route) !== index);
+  assert.deepEqual(duplicates, []);
+});
 
 test('all shared navigation destinations resolve to an App route', () => {
   assert.deepEqual(missingRoutes, []);

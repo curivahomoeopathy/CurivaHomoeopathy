@@ -14,8 +14,6 @@ const profilePage = read('../src/pages/Profile.tsx');
 const questionService = read('../src/services/questionService.ts');
 const firestoreRules = read('../firestore.rules');
 const server = read('../server.ts');
-const aiGuard = read('../src/server/aiPrivacyGuard.ts');
-const askPage = read('../src/pages/AskHomoeopath.tsx');
 const aiCanvas = read('../src/components/MateriaMedicaCanvas.tsx');
 const analytics = read('../src/lib/analytics.ts');
 const contactPage = read('../src/pages/Contact.tsx');
@@ -117,24 +115,15 @@ test('service worker caches only public static resources and excludes sensitive 
   assert.doesNotMatch(serviceWorker, /cache\.put\(event\.request/);
 });
 
-test('AI endpoints have a stricter shared Netlify edge quota ahead of the general API limit', () => {
-  const geminiStart = netlify.indexOf('from = "/api/gemini/*"');
+test('general Netlify API edge quota remains configured without provider-specific AI routes', () => {
+  assert.doesNotMatch(netlify, /api\\/gemini|GEMINI_API_KEY|@google\\/genai/i);
   const apiStart = netlify.indexOf('from = "/api/*"');
-  assert.ok(geminiStart >= 0, 'Gemini edge rate limit must exist');
-  assert.ok(apiStart > geminiStart, 'the specific Gemini redirect must precede the general API redirect');
-
-  const nextAfterGemini = netlify.indexOf('[[redirects]]', geminiStart + 1);
-  const geminiRule = netlify.slice(geminiStart, nextAfterGemini === -1 ? netlify.length : nextAfterGemini);
-  assert.match(geminiRule, /to = "\/\.netlify\/functions\/api\/gemini\/:splat"/);
-  assert.match(geminiRule, /window_limit = 12/);
-  assert.match(geminiRule, /window_size = 60/);
-  assert.match(geminiRule, /aggregate_by = \["ip", "domain"\]/);
-
+  assert.ok(apiStart >= 0);
   const nextAfterApi = netlify.indexOf('[[redirects]]', apiStart + 1);
   const apiRule = netlify.slice(apiStart, nextAfterApi === -1 ? netlify.length : nextAfterApi);
   assert.match(apiRule, /window_limit = 120/);
   assert.match(apiRule, /window_size = 60/);
-  assert.match(apiRule, /aggregate_by = \["ip", "domain"\]/);
+  assert.match(apiRule, /aggregate_by = \\["ip", "domain"\\]/);
 });
 
 test('Firebase App Check is supported for web when an environment site key is configured', () => {
@@ -267,7 +256,7 @@ test('profile schema and update rules deny role escalation and extra contact/cli
 
 test('public question submissions are anonymous by default, bounded and pending-only', () => {
   const questionWrite = questionService.slice(questionService.indexOf('async submitQuestion'), questionService.indexOf('async getMyQuestions'));
-  assert.match(questionWrite, /validateAcademicAiText/);
+  assert.match(questionWrite, /validateSubmittedText/);
   assert.match(questionWrite, /status: QuestionStatus\.PENDING/);
   assert.doesNotMatch(questionWrite, /userEmail:|userName:/);
   const start = firestoreRules.indexOf('match /questions/{questionId}');
@@ -276,19 +265,6 @@ test('public question submissions are anonymous by default, bounded and pending-
   assert.match(questionRule, /isValidQuestion\(incoming\(\)\)/);
   assert.match(questionRule, /allow update: if isAdmin\(\)/);
   assert.match(questionRule, /allow delete: if isAdmin\(\)/);
-});
-
-test('AI data sharing requires versioned consent and best-effort sensitive text checks', () => {
-  assert.match(aiGuard, /AI_ACADEMIC_CONSENT_VERSION = 'academic-only-v1'/);
-  assert.match(aiGuard, /containsPotentialPrivateHealthInformation/);
-  assert.match(aiGuard, /validateAcademicAiText/);
-  assert.match(askPage, /X-Curiva-AI-Consent/);
-  assert.match(askPage, /validateAcademicAiText/);
-  assert.match(aiCanvas, /X-Curiva-AI-Consent/);
-  assert.match(aiCanvas, /priorHistoryIsSafe/);
-  assert.match(server, /requireAcademicAiConsent/);
-  assert.match(server, /res\.status\(428\)/);
-  assert.match(server, /limit: "128kb"/);
 });
 
 test('Firestore client diagnostics never log or return user identity', () => {
@@ -306,22 +282,6 @@ test('Firestore client diagnostics never log or return user identity', () => {
 test('payment webhook diagnostics do not log internal order identifiers', () => {
   assert.doesNotMatch(server, /has no customer email[^\n]*orderId/i);
   assert.match(server, /Captured payment webhook is missing a customer contact field/);
-});
-
-test('server disables health-specific AI and arbitrary content-generation endpoints', () => {
-  for (const route of [
-    '/api/gemini/hair-loss-coach',
-    '/api/gemini/analyze-symptoms',
-    '/api/gemini/professional-tool',
-    '/api/gemini/generate-ebook',
-    '/api/custom-search'
-  ]) {
-    const position = server.indexOf('app.post("' + route + '"');
-    assert.notEqual(position, -1);
-    assert.match(server.slice(position, position + 650), /status\(410\)/);
-  }
-  const personalization = server.slice(server.indexOf('app.post("/api/personalize"'));
-  assert.doesNotMatch(personalization, /safeGenerateContent|userProfile|userQuery|edge_all_open_tabs/);
 });
 
 test('analytics and fake collection forms stay disabled', () => {
@@ -356,7 +316,7 @@ test('privileged appointment and account-linked payment actions require verified
 });
 
 test('privacy and security notices document implemented controls and known gaps', () => {
-  assert.match(privacyPolicy, /Google Gemini/);
+  assert.match(privacyPolicy, /does not provide generative AI/i);
   assert.match(privacyPolicy, /best-effort/);
   assert.match(privacyPolicy, /Legacy records/);
   assert.match(privacyPolicy, /self-service account-deletion workflow/);
