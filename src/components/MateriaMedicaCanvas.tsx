@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
-  motion, useNavigate, Edit2, Save, BookOpen, Printer, Search, Filter, Leaf, Database, Activity, Star, CheckCircle2, Layers, ArrowUpRight, Network, ShieldAlert, Bookmark, BookmarkCheck, ArrowUpDown
+  Edit2, Save, BookOpen, Printer, Search, Filter, Leaf, Database, Activity, Star, CheckCircle2, Layers, ArrowUpRight, Network, ShieldAlert, Bookmark, BookmarkCheck, ArrowUpDown
 } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { enhancedRemedies, RemedyDetailData } from '../data/enhancedRemedies';

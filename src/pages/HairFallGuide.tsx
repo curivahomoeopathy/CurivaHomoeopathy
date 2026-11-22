@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "motion/react";
 import {
-  Menu, X, Search, Bookmark, ArrowLeft, ArrowRight, Sun, Check, Info
+  Menu, X, Search, Bookmark, ArrowLeft, ArrowRight, Sun, Check, Info, BookOpen
 } from "lucide-react";
 import SEO from "../components/SEO";
 import SafeHtmlContent from "../components/SafeHtmlContent";
