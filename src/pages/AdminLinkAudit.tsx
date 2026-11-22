@@ -329,7 +329,7 @@ export const APP_ROUTES: AppRoute[] = [
   { path: '/historic-pioneers', component: 'Stalwarts', category: 'public', description: 'Stalwart homoeopath biographies' },
   { path: '/historic-pioneers/:slug', component: 'Stalwarts', category: 'public', description: 'Stalwart detail profiles' },
   { path: '/clinical-cases', component: 'ClinicalHandbook', category: 'clinical', description: 'Practice log studies and clinical records' },
-  { path: '/ask-Homoeopath', component: 'AskHomoeopath', category: 'public', description: 'Interactive virtual clinical consultant tool' },
+  { path: '/ask-Homoeopath', component: 'Navigate', category: 'public', description: 'Legacy assistant URL redirects to the student subject hub' },
   { path: '/lexicon', component: 'Encyclopedia', category: 'core', description: 'Medical terminology search' },
   { path: '/lexicon/all', component: 'Encyclopedia', category: 'core', description: 'Complete medical lexicon' },
   { path: '/lexicon/philosophy', component: 'OrganonMedicine', category: 'student', description: 'Philosophical terminologies' },

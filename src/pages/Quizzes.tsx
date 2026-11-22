@@ -180,12 +180,12 @@ export default function Quizzes() {
                 <div className="space-y-2 text-center md:text-left">
                   <h4 className="text-xl font-display font-bold text-text-primary">Ready for a deeper challenge?</h4>
                   <p className="text-text-secondary text-sm leading-relaxed">
-                    Our AI-powered assessment engine can generate custom mock exams for BHMS students and AIAPGET aspirants.
+                    Build a timed mock exam from the existing subject-wise question bank for BHMS and AIAPGET preparation.
                   </p>
                 </div>
-                <button className="whitespace-nowrap px-8 py-4 bg-primary text-white font-black rounded-2xl hover:scale-105 transition-transform uppercase tracking-widest text-xs ml-auto shadow-xl shadow-primary/20">
+                <Link to="/mcq-practice" className="whitespace-nowrap px-8 py-4 bg-primary text-white font-black rounded-2xl hover:scale-105 transition-transform uppercase tracking-widest text-xs ml-auto shadow-xl shadow-primary/20">
                   Advanced MCQ Arena
-                </button>
+                </Link>
               </div>
             </motion.div>
           ) : (
