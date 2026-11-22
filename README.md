@@ -6,7 +6,7 @@ An educational medical-learning platform for BHMS students. The website and Andr
 
 Curiva Homoeopathy is developed and maintained by the Curiva Homoeopathy project owner. Product direction, Curiva-specific architecture, feature development, integrations, testing, and ongoing maintenance are managed as part of this independent project. The codebase began from a starter scaffold and has since been developed into the Curiva website and native Android learning application.
 
-Open-source libraries and external services—including Google Gemini for selected AI-assisted features—are used as documented technical dependencies. These services do not own, publish, or maintain the Curiva Homoeopathy product.
+Curiva does not include generative AI, LLM APIs, chatbots, AI-generated content, or AI-based recommendations. Search, study tools, quizzes and assessments use conventional deterministic software and human-authored educational content.
 
 > **Android app architecture:** The Android build is a standalone Kotlin + Jetpack Compose application. It does not open the React website, does not embed a website WebView, and does not request internet access. Its curriculum, lessons, question bank, flashcards, Materia Medica profiles, and Kent Repertory index are bundled for offline study. Learning progress is saved locally on the device; account sign-in and cloud progress sync are not part of this native build.
 
@@ -31,7 +31,7 @@ npm run build
 
 Use the current draft pull request's preview build to verify the frontend and API integration before production. Configure secrets only in Netlify's environment-variable settings; never commit real keys or use `VITE_*` for server credentials. Required external-service setup for payments, private downloads, email delivery, and clinic calendar is documented below. Firebase rule deployment should be a separate, reviewed operation because it replaces the database's deployed rules.
 
-Use [`docs/PRODUCTION_INTEGRATION_VERIFICATION.md`](docs/PRODUCTION_INTEGRATION_VERIFICATION.md) for the exact preview smoke command, Firestore emulator and deployment procedure, Gemini quota/safety checks, and Razorpay/Storage/Resend/Calendar release gates.
+Use [`docs/PRODUCTION_INTEGRATION_VERIFICATION.md`](docs/PRODUCTION_INTEGRATION_VERIFICATION.md) for the exact preview smoke command, Firestore emulator and deployment procedure, Razorpay/Storage/Resend/Calendar release gates.
 
 ## Free website + app workflow
 
@@ -97,7 +97,7 @@ This repo's Netlify site builds and deploys from `main`. Keep the Netlify Git co
 
 The development branch wraps the existing Express routes in `netlify/functions/api.ts` via `serverless-http`; `netlify.toml` rewrites `/api/*` to the function before the SPA fallback. This keeps the website and API in one project without starting a listening socket inside the function.
 
-Configure server-side environment variables in the Netlify deploy-preview environment before testing integrations: `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `FIREBASE_SERVICE_ACCOUNT_JSON`, `CURIVA_PRIVATE_DOWNLOAD_BUCKET`, optional `FIRESTORE_DATABASE_ID` and `FIREBASE_WEB_API_KEY`, plus `GEMINI_API_KEY` and (when used) `GOOGLE_CUSTOM_SEARCH_API_KEY` / `GOOGLE_CUSTOM_SEARCH_CX`. For delivery email, set `RESEND_API_KEY` and `RESOURCE_EMAIL_FROM`; verify the sender/domain in Resend before enabling it. `VITE_RAZORPAY_KEY_ID` is a public checkout key injected during the frontend build; never place server secrets in `VITE_*` variables.
+Configure server-side environment variables in the Netlify deploy-preview environment before testing integrations: `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `FIREBASE_SERVICE_ACCOUNT_JSON`, `CURIVA_PRIVATE_DOWNLOAD_BUCKET`, optional `FIRESTORE_DATABASE_ID` and `FIREBASE_WEB_API_KEY`, plus the required integration credentials for features intentionally enabled. For delivery email, set `RESEND_API_KEY` and `RESOURCE_EMAIL_FROM`; verify the sender/domain in Resend before enabling it. `VITE_RAZORPAY_KEY_ID` is a public checkout key injected during the frontend build; never place server secrets in `VITE_*` variables.
 
 The payment verification route writes an idempotent `paid` order document to the configured Firestore database using the server-only service account before releasing a download link. The `/api/razorpay-webhook` endpoint validates `X-Razorpay-Signature` against the raw request bytes and re-fetches captured order/payment records before using the same paid-order persistence path. Configure `payment.captured` in the Razorpay dashboard to call this endpoint and set the same webhook secret in Netlify.
 
