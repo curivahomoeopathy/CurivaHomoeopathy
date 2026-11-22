@@ -22,16 +22,16 @@
     "test:study-toolkit-sync": "tsx --test tests/study-toolkit-sync.test.ts",
     "test:chauhan-question-bank": "tsx --test tests/chauhan-question-bank.test.ts",
     "export:native-content": "tsx scripts/export-native-content.ts",
-    "test:privacy-security": "node --test tests/privacy-security-hardening.test.mjs && tsx --test tests/ai-privacy-guard.test.ts",
+    "test:privacy-security": "node --test tests/privacy-security-hardening.test.mjs",
     "verify:deploy-preview": "node scripts/verify-deploy-preview.mjs",
     "test:disease-assets": "tsx --test tests/disease-hub-assets.test.ts",
     "test:auth": "tsx --test tests/auth-error-message.test.ts",
-    "test:organon-curriculum": "tsx --test tests/organon-curriculum.test.ts"
+    "test:organon-curriculum": "tsx --test tests/organon-curriculum.test.ts",
+    "test:ai-free": "node --test tests/ai-free-architecture.test.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.6.0",
     "@capacitor/core": "^8.6.2",
-    "@google/genai": "^2.32.0",
     "@tailwindcss/vite": "^4.1.14",
     "@types/d3": "^7.4.3",
     "@vitejs/plugin-react": "^6.2.1",

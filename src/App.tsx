@@ -111,7 +111,6 @@ const FmtHome = lazyLoad(() => import('./pages/FmtHome'));
 const FmtModuleDetail = lazyLoad(() => import('./pages/FmtModuleDetail'));
 const FmtMcqSystem = lazyLoad(() => import('./pages/FmtMcqSystem'));
 const FmtSearchPage = lazyLoad(() => import('./pages/FmtSearchPage'));
-const AskHomoeopath = lazyLoad(() => import('./pages/AskHomoeopath'));
 const FirstBhmsCrashCourse = lazyLoad(() => import('./pages/FirstBhmsCrashCourse'));
 const AdminLinkAudit = lazyLoad(() => import('./pages/AdminLinkAudit'));
 const ComingSoon = lazyLoad(() => import('./pages/ComingSoon'));
@@ -401,14 +400,13 @@ function AppRoutes() {
                 <Route path="/research-entry/:slug" element={<PageWrapper><ResearchEntryPage /></PageWrapper>} />
                 <Route path="/knowledge-base" element={<PageWrapper><Encyclopedia /></PageWrapper>} />
                 <Route path="/research-updates" element={<PageWrapper><CategoriesPage /></PageWrapper>} />
-                <Route path="/research-entry/:slug" element={<PageWrapper><ResearchEntryPage /></PageWrapper>} />
                 <Route path="/categories" element={<PageWrapper><CategoriesPage /></PageWrapper>} />
                 <Route path="/categories/*" element={<PageWrapper><CategoriesPage /></PageWrapper>} />
                 <Route path="/historic-pioneers" element={<PageWrapper><Stalwarts /></PageWrapper>} />
                 <Route path="/historic-pioneers/:slug" element={<PageWrapper><Stalwarts /></PageWrapper>} />
                 <Route path="/clinical-cases" element={<PageWrapper><ClinicalHandbook /></PageWrapper>} />
-                <Route path="/ask-Homoeopath" element={<PageWrapper><AskHomoeopath /></PageWrapper>} />
-                <Route path="/ask-expert" element={<Navigate to="/ask-Homoeopath" replace />} />
+                <Route path="/ask-Homoeopath" element={<Navigate to="/subjects" replace />} />
+                <Route path="/ask-expert" element={<Navigate to="/subjects" replace />} />
 
                 {/* Lexicon Routes */}
                 <Route path="/lexicon" element={<PageWrapper><Encyclopedia /></PageWrapper>} />
