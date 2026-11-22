@@ -6,15 +6,6 @@ Updated 7 November 2026 from the current `main` baseline and the security-harden
 - `POST /api/send-resource-email`
 - `POST /api/create-razorpay-order`
 - `POST /api/verify-razorpay-payment`
-- `POST /api/gemini/curiva-care`
-- `POST /api/gemini/hair-loss-coach`
-- `POST /api/gemini/search`
-- `POST /api/gemini/analyze-symptoms` — disabled with HTTP 410 pending educational redesign
-- `POST /api/gemini/case-simulation` — local educational roleplay; not patient care
-- `POST /api/gemini/simulation-feedback` — exercise profile-match feedback, not clinical accuracy
-- `POST /api/gemini/professional-tool` — disabled with HTTP 410 pending educational redesign
-- `POST /api/gemini/generate-ebook`
-- `POST /api/custom-search`
 - `POST /api/personalize`
 - `GET /api/posts`
 - `GET /api/posts/slug/:slug`
@@ -59,3 +50,8 @@ Appointment request notifications and admin calendar-backed status changes are n
 - Move the blog post store out of process memory before relying on runtime edits or persistence across serverless invocations.
 - Keep clinical patient records disabled until private storage, role-based access, audit/retention policy, and backup/recovery are designed and tested.
 - Continue visual/mobile refinements and test the Android shell/offline learning flows without resetting existing local learning data.
+
+
+## Generative AI status — 22 November 2026
+
+The current application has no generative AI provider SDK, endpoint, chatbot, consent component, AI-generated content workflow or AI-based clinical recommendation. Search, study tools and assessment features use conventional deterministic software and human-authored material. The `tests/ai-free-architecture.test.mjs` test guards this boundary.

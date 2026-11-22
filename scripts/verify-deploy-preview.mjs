@@ -4,7 +4,7 @@
  *
  * These probes verify that Netlify routes to the Express Function and that
  * security/validation gates are reachable. They do not create payments, call
- * Gemini, send email, write Firestore records, or confirm appointments.
+ * send email, write Firestore records, or confirm appointments.
  */
 import process from 'node:process';
 
@@ -89,17 +89,6 @@ try {
     pass('GET /api/appointments/config', `200 JSON; calendarConfigured=${appointmentConfig.json.calendarConfigured}; notificationsConfigured=${appointmentConfig.json.notificationsConfigured}`);
   } else {
     fail('GET /api/appointments/config', `expected 200 JSON with integration flags; got ${appointmentConfig.response.status} ${appointmentConfig.contentType}`);
-  }
-
-  // No consent header means this must stop before any external AI provider call.
-  const aiGate = await request('/api/gemini/curiva-care', {
-    method: 'POST',
-    body: JSON.stringify({ prompt: 'Explain the Organon as an academic study topic.' }),
-  });
-  if (aiGate.response.status === 428 && aiGate.json) {
-    pass('POST /api/gemini/curiva-care (no consent)', '428 consent gate; external provider is not called');
-  } else {
-    fail('POST /api/gemini/curiva-care (no consent)', `expected 428 JSON; got ${aiGate.response.status} ${aiGate.contentType}`);
   }
 
   // Invalid email is rejected before resource lookup, storage access or order creation.

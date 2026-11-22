@@ -18,7 +18,7 @@ test('Netlify API rewrites are not shadowed by a public-directory SPA fallback',
   const apiRewrite = config.indexOf('from = "/api/*"');
   const spaFallback = config.indexOf('from = "/*"');
   assert.ok(apiRewrite >= 0 && spaFallback > apiRewrite, 'SPA fallback must come after the general API rewrite in netlify.toml');
-  assert.doesNotMatch(config, /api\\/gemini/);
+  assert.ok(!config.includes('/api/gemini'));
   assert.match(config.slice(apiRewrite, spaFallback), /window_limit = 120/);
 });
 

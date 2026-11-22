@@ -116,7 +116,9 @@ test('service worker caches only public static resources and excludes sensitive 
 });
 
 test('general Netlify API edge quota remains configured without provider-specific AI routes', () => {
-  assert.doesNotMatch(netlify, /api\\/gemini|GEMINI_API_KEY|@google\\/genai/i);
+  assert.ok(!netlify.includes('/api/gemini'));
+  assert.ok(!netlify.includes('GEMINI_API_KEY'));
+  assert.ok(!netlify.includes('@google/genai'));
   const apiStart = netlify.indexOf('from = "/api/*"');
   assert.ok(apiStart >= 0);
   const nextAfterApi = netlify.indexOf('[[redirects]]', apiStart + 1);
