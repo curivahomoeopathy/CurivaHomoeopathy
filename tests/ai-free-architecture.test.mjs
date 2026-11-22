@@ -28,7 +28,7 @@ test('package manifest and lockfile do not install a generative AI SDK', () => {
 test('AI chatbot and consent components have been removed from the application', () => {
   for (const path of ['src/pages/AskHomoeopath.tsx', 'src/components/AiPrivacyNotice.tsx', 'src/services/gemini.ts', 'src/server/aiPrivacyGuard.ts']) assert.equal(existsSync(new URL('../' + path, import.meta.url)), false, path + ' should not exist');
   assert.doesNotMatch(read('src/App.tsx'), /AskHomoeopath/);
-  assert.match(read('src/App.tsx'), /path="\\/ask-Homoeopath" element=\\{<Navigate to="\\/subjects" replace \/>\\}/);
+  assert.ok(read('src/App.tsx').includes('<Route path="/ask-Homoeopath" element={<Navigate to="/subjects" replace />} />'));
   assert.doesNotMatch(read('netlify.toml'), /api\/gemini/);
   assert.doesNotMatch(read('.env.example'), /GEMINI_API_KEY/);
 });
