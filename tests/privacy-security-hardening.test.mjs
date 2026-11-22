@@ -125,7 +125,7 @@ test('general Netlify API edge quota remains configured without provider-specifi
   const apiRule = netlify.slice(apiStart, nextAfterApi === -1 ? netlify.length : nextAfterApi);
   assert.match(apiRule, /window_limit = 120/);
   assert.match(apiRule, /window_size = 60/);
-  assert.match(apiRule, /aggregate_by = \\["ip", "domain"\\]/);
+  assert.ok(apiRule.includes('aggregate_by = ["ip", "domain"]'));
 });
 
 test('Firebase App Check is supported for web when an environment site key is configured', () => {

@@ -64,19 +64,19 @@ export default function PrivacyPolicy() {
         <section className="space-y-3">
           <h2 className="text-2xl font-bold text-text-primary">4. Service providers</h2>
           <p className="text-sm leading-7 text-text-secondary">
-            The current architecture uses Firebase Authentication/Firestore for account and selected learning/appointment data; Razorpay for payments; Google Firebase services for authentication and learning data; Resend or another configured provider for transactional email; and Netlify/hosting and content-delivery services for delivery, functions and operational logs. Provider availability/configuration may differ by environment. Each provider processes information under its own contractual terms and privacy documentation.
+            The current architecture uses Firebase Authentication/Firestore for account and selected learning/appointment data; Razorpay for payments; Resend or another configured provider for transactional email; and Netlify/hosting and content-delivery services for delivery, functions and operational logs. Provider availability/configuration may differ by environment. Each provider processes information under its own contractual terms and privacy documentation.
           </p>
           <ul className="list-disc space-y-2 pl-6 text-sm leading-7 text-text-secondary">
             <li><a className="font-semibold text-primary underline" href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer">Firebase privacy and security information</a></li>
             <li><a className="font-semibold text-primary underline" href="https://razorpay.com/privacy/" target="_blank" rel="noopener noreferrer">Razorpay privacy policy</a></li>
-                        <li><a className="font-semibold text-primary underline" href="https://www.netlify.com/privacy/" target="_blank" rel="noopener noreferrer">Netlify privacy policy</a></li>
+            <li><a className="font-semibold text-primary underline" href="https://www.netlify.com/privacy/" target="_blank" rel="noopener noreferrer">Netlify privacy policy</a></li>
           </ul>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-2xl font-bold text-text-primary">5. Security controls and limitations</h2>
           <p className="text-sm leading-7 text-text-secondary">
-            Current controls include owner-scoped Firestore rules for account records, client-side denial of legacy case-log/screening/free-text cloud collections, privileged-only administrator membership changes, rate limits on selected API endpoints, private paid-resource downloads, HTTPS and standard security headers, and a service worker restricted to public static assets. API responses are configured as private/no-store. These measures reduce risk but do not guarantee that a breach, misconfiguration, malicious browser extension, compromised device, or third-party incident is impossible.
+            Current controls include owner-scoped Firestore rules for account records, client-side denial of legacy case-log/screening/free-text cloud collections, best-effort validation of submitted academic text (not de-identification), privileged-only administrator membership changes, rate limits on selected API endpoints, private paid-resource downloads, HTTPS and standard security headers, and a service worker restricted to public static assets. API responses are configured as private/no-store. These measures reduce risk but do not guarantee that a breach, misconfiguration, malicious browser extension, compromised device, or third-party incident is impossible.
           </p>
           <p className="text-sm leading-7 text-text-secondary">
             Legacy records may still exist in Firestore from earlier application versions. Client access to the legacy case-log, screening and Study Toolkit collections is denied in the current rules, but a read-only inventory and an approved retention/deletion process are still required before we can say that historical data has been deleted.
