@@ -622,7 +622,7 @@ export const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, onTagClick
                 <div className="flex-1">
                   <span className="text-[9px] font-black uppercase tracking-widest text-teal-300 block mb-0.5">TEXT-TO-SPEECH STUDY NARRATION</span>
                   <p className="text-xs text-teal-100 font-medium">
-                    {isPlaying ? 'Now playing synthesized audio reading...' : 'Click to listen to AI-powered research summary'}
+                    {isPlaying ? 'Now playing synthesized audio reading...' : 'Click to listen to the article using synthesized text-to-speech'}
                   </p>
                 </div>
               </div>
